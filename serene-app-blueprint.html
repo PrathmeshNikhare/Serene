@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Serene — AI Mental Health App Blueprint</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sage: #7C9A7E;
+    --sage-light: #B8D4BA;
+    --sage-pale: #EDF4EE;
+    --terracotta: #C4785A;
+    --terracotta-light: #E8A98C;
+    --gold: #C9A84C;
+    --midnight: #1A2332;
+    --slate: #3D5166;
+    --mist: #8BA3B8;
+    --cream: #FAF8F4;
+    --warm-white: #FFFDF9;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--midnight);
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--midnight) 0%, var(--slate) 50%, #2A4A3E 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(124,154,126,0.15) 0%, transparent 70%);
+    top: -100px; right: -100px;
+    animation: breathe 6s ease-in-out infinite;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(196,120,90,0.1) 0%, transparent 70%);
+    bottom: -80px; left: -80px;
+    animation: breathe 8s ease-in-out infinite reverse;
+  }
+
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.15); opacity: 1; }
+  }
+
+  .app-badge {
+    display: inline-block;
+    background: rgba(124,154,126,0.2);
+    border: 1px solid rgba(124,154,126,0.4);
+    color: var(--sage-light);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    border-radius: 100px;
+    margin-bottom: 32px;
+    font-weight: 500;
+  }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(56px, 8vw, 96px);
+    font-weight: 300;
+    color: var(--warm-white);
+    line-height: 1;
+    letter-spacing: -2px;
+    margin-bottom: 12px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--sage-light);
+  }
+
+  .hero-tagline {
+    font-size: 18px;
+    color: var(--mist);
+    font-weight: 300;
+    margin-bottom: 16px;
+    letter-spacing: 0.5px;
+  }
+
+  .hero-sub {
+    font-size: 13px;
+    color: rgba(139,163,184,0.7);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 60px;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    flex-wrap: wrap;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px;
+    font-weight: 600;
+    color: var(--sage-light);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--mist);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 4px;
+  }
+
+  /* NAV */
+  .toc {
+    background: var(--midnight);
+    padding: 24px 40px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(124,154,126,0.2);
+  }
+
+  .toc a {
+    color: var(--mist);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 100px;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+  }
+
+  .toc a:hover {
+    color: var(--sage-light);
+    border-color: rgba(124,154,126,0.3);
+    background: rgba(124,154,126,0.1);
+  }
+
+  /* SECTIONS */
+  .section {
+    padding: 80px 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    margin-bottom: 48px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(61,81,102,0.15);
+  }
+
+  .section-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 72px;
+    font-weight: 300;
+    color: var(--sage-light);
+    opacity: 0.4;
+    line-height: 1;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 38px;
+    font-weight: 400;
+    color: var(--midnight);
+    letter-spacing: -0.5px;
+  }
+
+  .section-title em {
+    font-style: italic;
+    color: var(--terracotta);
+  }
+
+  /* APP NAME SECTION */
+  .name-section {
+    background: linear-gradient(135deg, var(--sage-pale) 0%, #E8F0E9 100%);
+    border-radius: 24px;
+    padding: 40px;
+    margin-bottom: 32px;
+    border-left: 4px solid var(--sage);
+  }
+
+  .app-name-suggestion {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .name-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+
+  .name-card:hover { border-color: var(--sage); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(124,154,126,0.2); }
+  .name-card.featured { border-color: var(--sage); background: var(--sage-pale); }
+
+  .name-card .name { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--midnight); }
+  .name-card .meaning { font-size: 12px; color: var(--slate); margin-top: 4px; }
+  .name-card .tag { display: inline-block; background: var(--sage-light); color: var(--midnight); font-size: 10px; padding: 2px 8px; border-radius: 100px; margin-top: 8px; }
+
+  /* CARDS GRID */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    background: white;
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    transition: all 0.3s;
+    border: 1px solid rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent, var(--sage));
+  }
+
+  .card:hover { transform: translateY(-6px); box-shadow: 0 12px 32px rgba(0,0,0,0.1); }
+
+  .card-icon { font-size: 36px; margin-bottom: 16px; }
+  .card-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--midnight); margin-bottom: 10px; }
+  .card-desc { font-size: 14px; color: var(--slate); line-height: 1.7; }
+  .card-features { margin-top: 16px; }
+  .card-feature { font-size: 13px; color: var(--slate); padding: 4px 0; padding-left: 16px; position: relative; }
+  .card-feature::before { content: '→'; position: absolute; left: 0; color: var(--sage); font-size: 11px; top: 5px; }
+
+  /* USER PERSONAS */
+  .personas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .persona {
+    border-radius: 20px;
+    padding: 24px 20px;
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .persona-teen { background: linear-gradient(135deg, #4A90D9, #7B68EE); }
+  .persona-student { background: linear-gradient(135deg, #E67E22, #F39C12); }
+  .persona-parent { background: linear-gradient(135deg, #27AE60, #2ECC71); }
+  .persona-woman { background: linear-gradient(135deg, #C4785A, #E8A98C); }
+  .persona-corporate { background: linear-gradient(135deg, #2C3E50, #3D5166); }
+
+  .persona-emoji { font-size: 40px; margin-bottom: 12px; }
+  .persona-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; }
+  .persona-count { font-size: 11px; opacity: 0.8; margin-top: 4px; letter-spacing: 1px; }
+
+  /* FEATURE TABLE */
+  .feature-tier {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    margin-bottom: 20px;
+  }
+
+  .tier-header {
+    padding: 24px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .tier-free .tier-header { background: linear-gradient(135deg, var(--sage-pale), #E0EDE1); }
+  .tier-basic .tier-header { background: linear-gradient(135deg, #EDF2F7, #E2E8F0); }
+  .tier-premium .tier-header { background: linear-gradient(135deg, var(--midnight), var(--slate)); color: white; }
+  .tier-pro .tier-header { background: linear-gradient(135deg, #2C1654, #4A1FA8); color: white; }
+
+  .tier-name { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; }
+  .tier-price { font-size: 13px; opacity: 0.8; }
+  .tier-price span { font-size: 24px; font-weight: 700; font-family: 'DM Sans', sans-serif; }
+
+  .tier-items { padding: 20px 28px 28px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+  .tier-item { font-size: 13px; color: var(--slate); padding: 6px 0 6px 20px; position: relative; }
+  .tier-item::before { content: '✓'; position: absolute; left: 0; color: var(--sage); font-weight: 700; }
+
+  /* REVENUE MODEL */
+  .revenue-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+
+  .revenue-card {
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    background: white;
+    border: 1px solid rgba(0,0,0,0.07);
+    transition: all 0.3s;
+  }
+
+  .revenue-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .revenue-card .rev-icon { font-size: 32px; margin-bottom: 12px; }
+  .revenue-card .rev-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--midnight); margin-bottom: 8px; }
+  .revenue-card .rev-est { font-size: 20px; font-weight: 700; color: var(--sage); font-family: 'DM Sans', sans-serif; }
+  .revenue-card .rev-desc { font-size: 12px; color: var(--slate); margin-top: 4px; }
+
+  /* TECH STACK */
+  .tech-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .tech-badge {
+    background: var(--midnight);
+    color: var(--sage-light);
+    font-size: 12px;
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  .tech-badge.highlight { background: var(--sage); color: var(--midnight); }
+  .tech-label { font-size: 12px; color: var(--mist); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; margin-top: 16px; }
+
+  /* ROADMAP */
+  .roadmap {
+    position: relative;
+    padding-left: 40px;
+  }
+
+  .roadmap::before {
+    content: '';
+    position: absolute;
+    left: 12px; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--sage), var(--sage-light), rgba(124,154,126,0.2));
+  }
+
+  .roadmap-phase {
+    position: relative;
+    margin-bottom: 40px;
+  }
+
+  .roadmap-phase::before {
+    content: '';
+    position: absolute;
+    left: -34px; top: 8px;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--sage);
+    border: 3px solid var(--cream);
+    box-shadow: 0 0 0 2px var(--sage);
+  }
+
+  .phase-label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--sage); font-weight: 500; margin-bottom: 6px; }
+  .phase-title { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 600; color: var(--midnight); margin-bottom: 4px; }
+  .phase-time { font-size: 13px; color: var(--terracotta); margin-bottom: 12px; }
+  .phase-items { font-size: 13px; color: var(--slate); line-height: 2; }
+
+  /* DAILY ACTIVITIES */
+  .activity-wheel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+  }
+
+  .activity-card {
+    background: white;
+    border-radius: 20px;
+    padding: 24px 16px;
+    text-align: center;
+    border: 1px solid rgba(0,0,0,0.06);
+    transition: all 0.3s;
+  }
+
+  .activity-card:hover { transform: translateY(-4px) rotate(1deg); }
+  .activity-card .act-icon { font-size: 36px; margin-bottom: 10px; }
+  .activity-card .act-name { font-size: 13px; font-weight: 500; color: var(--midnight); }
+  .activity-card .act-time { font-size: 11px; color: var(--sage); margin-top: 4px; }
+
+  /* DIVIDER */
+  .divider {
+    width: 60px;
+    height: 1px;
+    background: var(--sage);
+    margin: 60px auto;
+    opacity: 0.4;
+  }
+
+  /* HIGHLIGHT BOX */
+  .highlight-box {
+    background: linear-gradient(135deg, var(--midnight), var(--slate));
+    border-radius: 24px;
+    padding: 40px;
+    color: white;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .highlight-box::after {
+    content: '';
+    position: absolute;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(124,154,126,0.1);
+    top: -60px; right: -60px;
+  }
+
+  .highlight-box h3 { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 400; margin-bottom: 12px; }
+  .highlight-box p { font-size: 14px; opacity: 0.8; line-height: 1.8; }
+
+  /* AI FEATURES */
+  .ai-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .ai-card {
+    background: linear-gradient(135deg, var(--midnight) 0%, #253346 100%);
+    border-radius: 20px;
+    padding: 28px;
+    color: white;
+    border: 1px solid rgba(124,154,126,0.2);
+    transition: all 0.3s;
+  }
+
+  .ai-card:hover { border-color: rgba(124,154,126,0.5); transform: translateY(-4px); }
+  .ai-card .ai-icon { font-size: 32px; margin-bottom: 16px; }
+  .ai-card .ai-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; margin-bottom: 10px; color: var(--sage-light); }
+  .ai-card .ai-desc { font-size: 13px; opacity: 0.75; line-height: 1.7; }
+
+  /* FOOTER */
+  .footer {
+    background: var(--midnight);
+    color: var(--mist);
+    text-align: center;
+    padding: 48px 40px;
+    font-size: 13px;
+    line-height: 2;
+  }
+
+  .footer .footer-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; color: var(--sage-light); margin-bottom: 12px; }
+
+  /* SCROLL ANIMATION */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 600px) {
+    .section { padding: 48px 20px; }
+    .toc { padding: 16px 20px; }
+    .section-num { font-size: 48px; }
+    .section-title { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="app-badge">AI Mental Health App — Product Blueprint</div>
+  <h1><em>Serene</em></h1>
+  <p class="hero-tagline">Your AI-Powered Companion for a Calm, Focused & Joyful Life</p>
+  <p class="hero-sub">Blueprint by Namrata · Powered by Psychology + AI</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">5+</div><div class="stat-label">User Categories</div></div>
+    <div class="stat"><div class="stat-num">4</div><div class="stat-label">Revenue Streams</div></div>
+    <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Scalable</div></div>
+    <div class="stat"><div class="stat-num">₹cr</div><div class="stat-label">Revenue Potential</div></div>
+  </div>
+</section>
+
+<!-- NAV -->
+<nav class="toc">
+  <a href="#vision">Vision</a>
+  <a href="#personas">Users</a>
+  <a href="#sections">App Sections</a>
+  <a href="#problems">Problems</a>
+  <a href="#free">Free Layer</a>
+  <a href="#paid">Paid Plans</a>
+  <a href="#ai">AI Features</a>
+  <a href="#revenue">Revenue</a>
+  <a href="#tech">Tech Stack</a>
+  <a href="#roadmap">Roadmap</a>
+</nav>
+
+<!-- 0. VISION & APP NAME -->
+<section class="section fade-in" id="vision">
+  <div class="section-header">
+    <div class="section-num">0</div>
+    <h2 class="section-title">The <em>Vision</em> & App Identity</h2>
+  </div>
+
+  <div class="highlight-box">
+    <h3>The Core Insight</h3>
+    <p>India has 200M+ people dealing with anxiety, stress, and burnout — yet mental health support remains stigmatized, expensive, and inaccessible. <strong>Serene</strong> bridges that gap with AI-powered, personalized, culturally-aware mental wellness — available 24×7, in your pocket, in your language.</p>
+    <p style="margin-top:12px;">Your unique edge: <strong>You are both the Engineer AND the Psychologist.</strong> Most mental health apps are built by engineers who hired psychologists. You understand both worlds natively. That is your moat.</p>
+  </div>
+
+  <h3 style="font-family:'Cormorant Garamond',serif; font-size:24px; margin-bottom:20px;">Suggested App Names</h3>
+  <div class="app-name-suggestion">
+    <div class="name-card featured">
+      <div class="name">Serene</div>
+      <div class="meaning">Calm, clear, and peaceful — universally understood</div>
+      <div class="tag">⭐ Recommended</div>
+    </div>
+    <div class="name-card">
+      <div class="name">Mann</div>
+      <div class="meaning">Mind in Hindi — deeply Indian, emotional resonance</div>
+      <div class="tag">Indian roots</div>
+    </div>
+    <div class="name-card">
+      <div class="name">Prashan</div>
+      <div class="meaning">Peaceful/Serene in Sanskrit — premium feel</div>
+      <div class="tag">Sanskrit origin</div>
+    </div>
+    <div class="name-card">
+      <div class="name">Stillr</div>
+      <div class="meaning">Modern, app-native, global appeal</div>
+      <div class="tag">Startup vibe</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 1. USER PERSONAS -->
+<section class="section fade-in" id="personas">
+  <div class="section-header">
+    <div class="section-num">1</div>
+    <h2 class="section-title">Who We <em>Serve</em></h2>
+  </div>
+
+  <div class="personas">
+    <div class="persona persona-teen">
+      <div class="persona-emoji">🧒</div>
+      <div class="persona-title">Teenagers (13–19)</div>
+      <div class="persona-count">250M+ in India</div>
+    </div>
+    <div class="persona persona-student">
+      <div class="persona-emoji">📚</div>
+      <div class="persona-title">Exam Warriors</div>
+      <div class="persona-count">JEE · NEET · CUET · CLAT</div>
+    </div>
+    <div class="persona persona-parent">
+      <div class="persona-emoji">👨‍👩‍👧</div>
+      <div class="persona-title">Parents of Teens</div>
+      <div class="persona-count">Stressed & confused</div>
+    </div>
+    <div class="persona persona-woman">
+      <div class="persona-emoji">👩</div>
+      <div class="persona-title">Women (20–45)</div>
+      <div class="persona-count">Dual burden: home + work</div>
+    </div>
+    <div class="persona persona-corporate">
+      <div class="persona-emoji">💼</div>
+      <div class="persona-title">Corporate Employees</div>
+      <div class="persona-count">Burnout epidemic</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 2. APP SECTIONS -->
+<section class="section fade-in" id="sections">
+  <div class="section-header">
+    <div class="section-num">2</div>
+    <h2 class="section-title">App <em>Sections</em> & Architecture</h2>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card" style="--accent: #7C9A7E;">
+      <div class="card-icon">🏠</div>
+      <div class="card-title">Daily Wellness Hub</div>
+      <div class="card-desc">The home screen — personalized daily check-in, mood tracking, and your wellness score for the day.</div>
+      <div class="card-features">
+        <div class="card-feature">Morning intention setter</div>
+        <div class="card-feature">Mood tracker with AI insights</div>
+        <div class="card-feature">Daily affirmations (personalized)</div>
+        <div class="card-feature">Tonight's wind-down routine</div>
+      </div>
+    </div>
+
+    <div class="card" style="--accent: #4A90D9;">
+      <div class="card-icon">🧒</div>
+      <div class="card-title">Teen Zone</div>
+      <div class="card-desc">Safe, judgment-free space for teenagers to express, learn, and heal — designed for their language and world.</div>
+      <div class="card-features">
+        <div class="card-feature">Anonymous vent journal</div>
+        <div class="card-feature">Social anxiety toolkit</div>
+        <div class="card-feature">Peer pressure & identity navigator</div>
+        <div class="card-feature">Screen time & digital wellness</div>
+        <div class="card-feature">Body image & self-esteem module</div>
+      </div>
+    </div>
+
+    <div class="card" style="--accent: #E67E22;">
+      <div class="card-icon">📚</div>
+      <div class="card-title">Study Warrior</div>
+      <div class="card-desc">For JEE, NEET, CUET, CLAT, Board exam aspirants — focus, performance, and mental resilience training.</div>
+      <div class="card-features">
+        <div class="card-feature">Exam anxiety de-programmer</div>
+        <div class="card-feature">Pomodoro + mindfulness combos</div>
+        <div class="card-feature">Peak performance rituals</div>
+        <div class="card-feature">Failure resilience builder</div>
+        <div class="card-feature">Parent pressure coping tools</div>
+      </div>
+    </div>
+
+    <div class="card" style="--accent: #27AE60;">
+      <div class="card-icon">👨‍👩‍👧</div>
+      <div class="card-title">Parenting Compass</div>
+      <div class="card-desc">Help parents understand, connect with, and emotionally support their teenagers without the conflict.</div>
+      <div class="card-features">
+        <div class="card-feature">Teen psychology explainers</div>
+        <div class="card-feature">Communication scripts & tips</div>
+        <div class="card-feature">Conflict resolution guides</div>
+        <div class="card-feature">Digital parenting toolkit</div>
+        <div class="card-feature">Family therapy exercises</div>
+      </div>
+    </div>
+
+    <div class="card" style="--accent: #C4785A;">
+      <div class="card-icon">👩</div>
+      <div class="card-title">Women's Wellness</div>
+      <div class="card-desc">Addressing the unique stressors women face — hormonal, societal, relational, and professional.</div>
+      <div class="card-features">
+        <div class="card-feature">Cycle-synced wellness plans</div>
+        <div class="card-feature">Postpartum support module</div>
+        <div class="card-feature">Boundary-setting coach</div>
+        <div class="card-feature">Relationship stress navigator</div>
+        <div class="card-feature">Career-home balance tools</div>
+      </div>
+    </div>
+
+    <div class="card" style="--accent: #2C3E50;">
+      <div class="card-icon">💼</div>
+      <div class="card-title">Corporate Zen</div>
+      <div class="card-desc">Burnout prevention and performance optimization for working professionals in high-pressure environments.</div>
+      <div class="card-features">
+        <div class="card-feature">Burnout risk assessment</div>
+        <div class="card-feature">5-min desk meditation</div>
+        <div class="card-feature">Work-life boundary builder</div>
+        <div class="card-feature">Meeting fatigue recovery</div>
+        <div class="card-feature">Career anxiety debrief</div>
+      </div>
+    </div>
+
+    <div class="card" style="--accent: #9B59B6;">
+      <div class="card-icon">🤖</div>
+      <div class="card-title">AI Companion "Aura"</div>
+      <div class="card-desc">Always-on AI therapist companion — not a replacement for humans, but a 24×7 supportive presence.</div>
+      <div class="card-features">
+        <div class="card-feature">Conversational emotional support</div>
+        <div class="card-feature">CBT & DBT-based interventions</div>
+        <div class="card-feature">Crisis detection & escalation</div>
+        <div class="card-feature">Multilingual (Hindi, English, more)</div>
+      </div>
+    </div>
+
+    <div class="card" style="--accent: #C9A84C;">
+      <div class="card-icon">🎓</div>
+      <div class="card-title">Learn & Grow</div>
+      <div class="card-desc">Psychoeducation library — micro-courses, expert videos, and interactive mental health literacy modules.</div>
+      <div class="card-features">
+        <div class="card-feature">5-min psychology lessons</div>
+        <div class="card-feature">Expert therapist masterclasses</div>
+        <div class="card-feature">Workbooks & guided journals</div>
+        <div class="card-feature">Community stories & healing</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 3. PROBLEMS & SOLUTIONS -->
+<section class="section fade-in" id="problems">
+  <div class="section-header">
+    <div class="section-num">3</div>
+    <h2 class="section-title">Problems We <em>Solve</em></h2>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card" style="--accent: #4A90D9;">
+      <div class="card-icon">😰</div>
+      <div class="card-title">Exam Anxiety & Burnout</div>
+      <div class="card-desc"><strong>Problem:</strong> Students studying 14-16 hrs/day, collapsing under pressure. Suicide rates among students alarmingly high.</div>
+      <div class="card-features">
+        <div class="card-feature">AI-personalized study-rest rhythms</div>
+        <div class="card-feature">Cognitive defusion techniques (ACT)</div>
+        <div class="card-feature">Emergency calm protocols (5-4-3-2-1)</div>
+        <div class="card-feature">Progress journal to see growth</div>
+      </div>
+    </div>
+
+    <div class="card" style="--accent: #E74C3C;">
+      <div class="card-icon">💔</div>
+      <div class="card-title">Teen Identity Crisis</div>
+      <div class="card-desc"><strong>Problem:</strong> Social media comparison, FOMO, cyberbullying, sexual identity confusion — no safe outlet.</div>
+      <div class="card-features">
+        <div class="card-feature">Anonymous peer community</div>
+        <div class="card-feature">Self-esteem building journeys</div>
+        <div class="card-feature">Digital detox challenges</div>
+        <div class="card-feature">AI-moderated safe space</div>
+      </div>
+    </div>
+
+    <div class="card" style="--accent: #27AE60;">
+      <div class="card-icon">🌊</div>
+      <div class="card-title">Parent-Teen Disconnect</div>
+      <div class="card-desc"><strong>Problem:</strong> Parents from Gen X parenting Gen Z. Communication gaps lead to family conflict and teen isolation.</div>
+      <div class="card-features">
+        <div class="card-feature">Empathy-building exercises</div>
+        <div class="card-feature">Conversation starter cards</div>
+        <div class="card-feature">Joint family challenges</div>
+        <div class="card-feature">Parent psychology education</div>
+      </div>
+    </div>
+
+    <div class="card" style="--accent: #C4785A;">
+      <div class="card-icon">🔥</div>
+      <div class="card-title">Women's Invisible Load</div>
+      <div class="card-desc"><strong>Problem:</strong> Working women manage career + household + emotional labor invisibly. Burnout, anxiety, guilt cycles.</div>
+      <div class="card-features">
+        <div class="card-feature">Guilt-free self-care frameworks</div>
+        <div class="card-feature">Hormonal mood tracking</div>
+        <div class="card-feature">Assertiveness training</div>
+        <div class="card-feature">Women-only peer circles</div>
+      </div>
+    </div>
+
+    <div class="card" style="--accent: #2C3E50;">
+      <div class="card-icon">🏢</div>
+      <div class="card-title">Corporate Burnout</div>
+      <div class="card-desc"><strong>Problem:</strong> 42% of Indian corporate employees report burnout. Presenteeism costs companies billions.</div>
+      <div class="card-features">
+        <div class="card-feature">Real-time burnout risk monitor</div>
+        <div class="card-feature">Micro-recovery techniques</div>
+        <div class="card-feature">Manager relationship coach</div>
+        <div class="card-feature">B2B wellness dashboards</div>
+      </div>
+    </div>
+
+    <div class="card" style="--accent: #9B59B6;">
+      <div class="card-icon">🚨</div>
+      <div class="card-title">Mental Health Stigma</div>
+      <div class="card-desc"><strong>Problem:</strong> Indians don't seek help due to stigma. "Mental hospital wala" culture prevents treatment.</div>
+      <div class="card-features">
+        <div class="card-feature">Normalize via storytelling</div>
+        <div class="card-feature">Anonymous first entry</div>
+        <div class="card-feature">Frame as "performance optimization"</div>
+        <div class="card-feature">Celebrity & influencer partnerships</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 4. FREE DAILY ACTIVITIES -->
+<section class="section fade-in" id="free">
+  <div class="section-header">
+    <div class="section-num">4</div>
+    <h2 class="section-title">Free <em>Daily</em> Wellness Layer</h2>
+  </div>
+
+  <div class="highlight-box" style="margin-bottom:32px;">
+    <h3>The Free Layer Strategy</h3>
+    <p>Make the free tier genuinely life-changing. When users see real results — better sleep, less anxiety, more focus — they convert to paid. Free is not a demo, it's a <strong>value delivery machine</strong> that builds trust and habit.</p>
+  </div>
+
+  <div class="activity-wheel">
+    <div class="activity-card"><div class="act-icon">🌅</div><div class="act-name">Morning Intention</div><div class="act-time">5 min · Daily</div></div>
+    <div class="activity-card"><div class="act-icon">🧘</div><div class="act-name">Guided Breathing</div><div class="act-time">3–10 min</div></div>
+    <div class="activity-card"><div class="act-icon">📓</div><div class="act-name">Gratitude Journal</div><div class="act-time">5 min</div></div>
+    <div class="activity-card"><div class="act-icon">🎵</div><div class="act-name">Mood Soundscapes</div><div class="act-time">Anytime</div></div>
+    <div class="activity-card"><div class="act-icon">💭</div><div class="act-name">Daily Affirmation</div><div class="act-time">1 min</div></div>
+    <div class="activity-card"><div class="act-icon">🌙</div><div class="act-name">Sleep Wind-Down</div><div class="act-time">15 min</div></div>
+    <div class="activity-card"><div class="act-icon">🏃</div><div class="act-name">Movement Nudge</div><div class="act-time">2 min</div></div>
+    <div class="activity-card"><div class="act-icon">🎯</div><div class="act-name">Focus Timer</div><div class="act-time">Pomodoro</div></div>
+    <div class="activity-card"><div class="act-icon">🌿</div><div class="act-name">Nature Sounds</div><div class="act-time">Anytime</div></div>
+    <div class="activity-card"><div class="act-icon">😊</div><div class="act-name">Mood Check-in</div><div class="act-time">2× daily</div></div>
+    <div class="activity-card"><div class="act-icon">🔔</div><div class="act-name">Mindful Moments</div><div class="act-time">Scheduled</div></div>
+    <div class="activity-card"><div class="act-icon">📊</div><div class="act-name">Weekly Insights</div><div class="act-time">Sunday</div></div>
+  </div>
+
+  <div style="margin-top:32px; background: var(--sage-pale); border-radius:20px; padding:28px;">
+    <h3 style="font-family:'Cormorant Garamond',serif; font-size:22px; margin-bottom:16px;">Streak & Gamification System (Free)</h3>
+    <div class="tech-row">
+      <span class="tech-badge">🔥 Daily Streaks</span>
+      <span class="tech-badge">🏆 Wellness Badges</span>
+      <span class="tech-badge">🌱 Growth Tree Visual</span>
+      <span class="tech-badge">📈 Mood Trends</span>
+      <span class="tech-badge">🎁 Unlock Rewards</span>
+      <span class="tech-badge">👥 Community Challenges</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 5. PAID SUBSCRIPTION TIERS -->
+<section class="section fade-in" id="paid">
+  <div class="section-header">
+    <div class="section-num">5</div>
+    <h2 class="section-title">Subscription <em>Architecture</em></h2>
+  </div>
+
+  <div class="feature-tier tier-free">
+    <div class="tier-header">
+      <div>
+        <div class="tier-name">🌱 Serene Free</div>
+        <div class="tier-price">Always free · Build the habit</div>
+      </div>
+      <div class="tier-price"><span>₹0</span>/mo</div>
+    </div>
+    <div class="tier-items">
+      <div class="tier-item">Daily mood check-in (2×/day)</div>
+      <div class="tier-item">5 guided breathing sessions/month</div>
+      <div class="tier-item">Basic gratitude journal</div>
+      <div class="tier-item">Morning & evening affirmations</div>
+      <div class="tier-item">3 sleep stories/month</div>
+      <div class="tier-item">Weekly mood report</div>
+      <div class="tier-item">Community access (read-only)</div>
+      <div class="tier-item">5 AI Companion messages/day</div>
+    </div>
+  </div>
+
+  <div class="feature-tier tier-basic">
+    <div class="tier-header">
+      <div>
+        <div class="tier-name">🌿 Serene Plus</div>
+        <div class="tier-price">For individuals starting their journey</div>
+      </div>
+      <div class="tier-price"><span>₹299</span>/mo · ₹1,999/yr</div>
+    </div>
+    <div class="tier-items">
+      <div class="tier-item">Everything in Free +</div>
+      <div class="tier-item">Unlimited AI Companion "Aura"</div>
+      <div class="tier-item">Full CBT/DBT exercise library</div>
+      <div class="tier-item">Unlimited sleep stories & soundscapes</div>
+      <div class="tier-item">Choose 1 persona module (Teen/Student/Women/Corporate)</div>
+      <div class="tier-item">Advanced mood analytics & trends</div>
+      <div class="tier-item">Personalized weekly wellness plan</div>
+      <div class="tier-item">Ad-free experience</div>
+    </div>
+  </div>
+
+  <div class="feature-tier tier-premium">
+    <div class="tier-header">
+      <div>
+        <div class="tier-name" style="color:white;">✨ Serene Premium</div>
+        <div class="tier-price" style="color:rgba(255,255,255,0.7);">Full healing journey — most popular</div>
+      </div>
+      <div class="tier-price" style="color:white;"><span>₹599</span>/mo · ₹3,999/yr</div>
+    </div>
+    <div class="tier-items">
+      <div class="tier-item" style="color:#8BA3B8;">Everything in Plus +</div>
+      <div class="tier-item" style="color:#8BA3B8;">All persona modules unlocked</div>
+      <div class="tier-item" style="color:#8BA3B8;">2× 30-min human therapist sessions/month</div>
+      <div class="tier-item" style="color:#8BA3B8;">Personalized AI therapy programs (4-week, 8-week)</div>
+      <div class="tier-item" style="color:#8BA3B8;">Family Plan (add 2 members)</div>
+      <div class="tier-item" style="color:#8BA3B8;">Priority crisis support line</div>
+      <div class="tier-item" style="color:#8BA3B8;">Expert masterclasses (live + recorded)</div>
+      <div class="tier-item" style="color:#8BA3B8;">Downloadable PDF workbooks</div>
+    </div>
+  </div>
+
+  <div class="feature-tier tier-pro">
+    <div class="tier-header">
+      <div>
+        <div class="tier-name" style="color:white;">💎 Serene Pro / B2B</div>
+        <div class="tier-price" style="color:rgba(255,255,255,0.7);">For schools, coaching centers, corporates</div>
+      </div>
+      <div class="tier-price" style="color:white;"><span>Custom</span> pricing</div>
+    </div>
+    <div class="tier-items">
+      <div class="tier-item" style="color:#B8A4D4;">Everything in Premium +</div>
+      <div class="tier-item" style="color:#B8A4D4;">Admin wellness dashboard</div>
+      <div class="tier-item" style="color:#B8A4D4;">Group therapy sessions</div>
+      <div class="tier-item" style="color:#B8A4D4;">Bulk user management</div>
+      <div class="tier-item" style="color:#B8A4D4;">Wellness analytics reports for HR/school</div>
+      <div class="tier-item" style="color:#B8A4D4;">Custom content branding</div>
+      <div class="tier-item" style="color:#B8A4D4;">Dedicated account manager</div>
+      <div class="tier-item" style="color:#B8A4D4;">HIPAA-compliant data handling</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 6. AI FEATURES -->
+<section class="section fade-in" id="ai">
+  <div class="section-header">
+    <div class="section-num">6</div>
+    <h2 class="section-title">AI-Powered <em>Magic</em></h2>
+  </div>
+
+  <div class="ai-grid">
+    <div class="ai-card">
+      <div class="ai-icon">🤖</div>
+      <div class="ai-title">Aura — AI Companion</div>
+      <div class="ai-desc">Conversational AI trained on CBT, DBT, mindfulness. Detects emotional tone, responds with clinical empathy. Never replaces a therapist — always a safe first step. Escalates to human when crisis signals detected.</div>
+    </div>
+
+    <div class="ai-card">
+      <div class="ai-icon">📊</div>
+      <div class="ai-title">Mood Intelligence Engine</div>
+      <div class="ai-desc">Tracks mood patterns across days, weeks, months. Identifies triggers (bad sleep, exams, periods, Mondays). Sends proactive "You might need support today" nudges before the user even notices a dip.</div>
+    </div>
+
+    <div class="ai-card">
+      <div class="ai-icon">🎯</div>
+      <div class="ai-title">Personalization Engine</div>
+      <div class="ai-desc">Day 1 onboarding quiz builds a psychological profile. Recommends sessions, exercises, and content uniquely suited to each user's stress type, learning style, and current life phase.</div>
+    </div>
+
+    <div class="ai-card">
+      <div class="ai-icon">🌐</div>
+      <div class="ai-title">Multilingual AI</div>
+      <div class="ai-desc">Hindi, English, and regional languages. Mental health support in one's mother tongue reduces cognitive barrier and emotional distance — critical for rural and semi-urban India.</div>
+    </div>
+
+    <div class="ai-card">
+      <div class="ai-icon">🚨</div>
+      <div class="ai-title">Crisis Detection AI</div>
+      <div class="ai-desc">NLP monitors journal entries and conversations for distress signals, suicidal ideation, or acute crisis. Triggers immediate human intervention and shows helpline resources. Safety-first architecture.</div>
+    </div>
+
+    <div class="ai-card">
+      <div class="ai-icon">📈</div>
+      <div class="ai-title">Progress Intelligence</div>
+      <div class="ai-desc">Tracks clinically-validated scales (PHQ-9, GAD-7, PSS) monthly. Shows users their measurable improvement. Nothing drives retention like seeing your own numbers improve over time.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 7. REVENUE MODEL -->
+<section class="section fade-in" id="revenue">
+  <div class="section-header">
+    <div class="section-num">7</div>
+    <h2 class="section-title">Revenue <em>Architecture</em></h2>
+  </div>
+
+  <div class="revenue-grid">
+    <div class="revenue-card">
+      <div class="rev-icon">💳</div>
+      <div class="rev-title">B2C Subscriptions</div>
+      <div class="rev-est">₹299–599/mo</div>
+      <div class="rev-desc">Core freemium → paid funnel. Target 2% conversion = massive revenue at scale.</div>
+    </div>
+
+    <div class="revenue-card">
+      <div class="rev-icon">🏢</div>
+      <div class="rev-title">B2B Corporate</div>
+      <div class="rev-est">₹200–500/employee/mo</div>
+      <div class="rev-desc">Sell to HR teams. One company deal = thousands of users. Highest LTV segment.</div>
+    </div>
+
+    <div class="revenue-card">
+      <div class="rev-icon">🏫</div>
+      <div class="rev-title">Schools & Coaching</div>
+      <div class="rev-est">₹50–150/student/mo</div>
+      <div class="rev-desc">Annual contracts with schools, IIT/NEET coaching centers. Institutional trust builder.</div>
+    </div>
+
+    <div class="revenue-card">
+      <div class="rev-icon">🎓</div>
+      <div class="rev-title">Expert Marketplace</div>
+      <div class="rev-est">20–30% commission</div>
+      <div class="rev-desc">Therapists, psychologists, coaches list on Serene. Platform takes a cut per session booked.</div>
+    </div>
+
+    <div class="revenue-card">
+      <div class="rev-icon">📚</div>
+      <div class="rev-title">Digital Products</div>
+      <div class="rev-est">₹199–999 one-time</div>
+      <div class="rev-desc">Workbooks, specialized programs (Exam Warrior 30-day, Sleep Reset, etc.), expert courses.</div>
+    </div>
+
+    <div class="revenue-card">
+      <div class="rev-icon">🤝</div>
+      <div class="rev-title">Insurance Tie-ups</div>
+      <div class="rev-est">Future stream</div>
+      <div class="rev-desc">Partner with health insurers who subsidize mental wellness apps. Star Health, Niva Bupa, etc.</div>
+    </div>
+
+    <div class="revenue-card">
+      <div class="rev-icon">🔬</div>
+      <div class="rev-title">Anonymized Data Insights</div>
+      <div class="rev-est">B2B Research</div>
+      <div class="rev-desc">Aggregate (non-PII) mental health trend data valuable to pharma, researchers, govt. ALWAYS with consent.</div>
+    </div>
+
+    <div class="revenue-card">
+      <div class="rev-icon">🌍</div>
+      <div class="rev-title">Global Expansion</div>
+      <div class="rev-est">SE Asia · Middle East</div>
+      <div class="rev-desc">Indian diaspora + similar cultural markets. Same architecture, localized content.</div>
+    </div>
+  </div>
+
+  <div class="highlight-box" style="margin-top:32px;">
+    <h3>Revenue on Auto Mode 🤖</h3>
+    <p>Free users → AI nudges them toward premium features → Automated conversion emails + in-app → Subscriptions renew automatically → Corporates sign annual contracts → Expert marketplace earns passively → Digital products sold 24×7. <strong>You sleep. Serene earns.</strong></p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 8. TECH STACK -->
+<section class="section fade-in" id="tech">
+  <div class="section-header">
+    <div class="section-num">8</div>
+    <h2 class="section-title">Tech <em>Architecture</em></h2>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card" style="--accent:#7C9A7E;">
+      <div class="card-title">📱 Mobile App</div>
+      <div class="tech-label">Frontend</div>
+      <div class="tech-row">
+        <span class="tech-badge highlight">React Native</span>
+        <span class="tech-badge">Expo</span>
+        <span class="tech-badge">TypeScript</span>
+      </div>
+      <div class="card-desc" style="margin-top:12px;">Single codebase for iOS + Android. You already know React ecosystem. Fast to market.</div>
+    </div>
+
+    <div class="card" style="--accent:#4A90D9;">
+      <div class="card-title">⚙️ Backend</div>
+      <div class="tech-label">Server</div>
+      <div class="tech-row">
+        <span class="tech-badge highlight">Python + FastAPI</span>
+        <span class="tech-badge">PostgreSQL</span>
+        <span class="tech-badge">Redis</span>
+      </div>
+      <div class="card-desc" style="margin-top:12px;">Your Python strength shines here. FastAPI is production-grade and fast to build with.</div>
+    </div>
+
+    <div class="card" style="--accent:#9B59B6;">
+      <div class="card-title">🤖 AI Layer</div>
+      <div class="tech-label">Intelligence</div>
+      <div class="tech-row">
+        <span class="tech-badge highlight">Claude API</span>
+        <span class="tech-badge">OpenAI</span>
+        <span class="tech-badge">Custom NLP</span>
+      </div>
+      <div class="card-desc" style="margin-top:12px;">Claude API for Aura companion. Fine-tuned sentiment + crisis detection models. LangChain for orchestration.</div>
+    </div>
+
+    <div class="card" style="--accent:#E67E22;">
+      <div class="card-title">☁️ Cloud</div>
+      <div class="tech-label">Infrastructure</div>
+      <div class="tech-row">
+        <span class="tech-badge highlight">AWS / GCP</span>
+        <span class="tech-badge">Docker</span>
+        <span class="tech-badge">Kubernetes</span>
+      </div>
+      <div class="card-desc" style="margin-top:12px;">Auto-scaling. Start small, scale infinitely. HIPAA/DPDP-compliant data residency in India.</div>
+    </div>
+
+    <div class="card" style="--accent:#C9A84C;">
+      <div class="card-title">💰 Payments</div>
+      <div class="tech-label">Monetization</div>
+      <div class="tech-row">
+        <span class="tech-badge highlight">Razorpay</span>
+        <span class="tech-badge">RevenueCat</span>
+        <span class="tech-badge">Stripe</span>
+      </div>
+      <div class="card-desc" style="margin-top:12px;">RevenueCat manages in-app subscriptions cross-platform. Razorpay for Indian payments. Stripe for global.</div>
+    </div>
+
+    <div class="card" style="--accent:#27AE60;">
+      <div class="card-title">📊 Analytics</div>
+      <div class="tech-label">Insights</div>
+      <div class="tech-row">
+        <span class="tech-badge highlight">Mixpanel</span>
+        <span class="tech-badge">Amplitude</span>
+        <span class="tech-badge">Metabase</span>
+      </div>
+      <div class="card-desc" style="margin-top:12px;">Track user journeys, conversion funnels, feature usage. Data-driven product decisions from Day 1.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 9. ROADMAP -->
+<section class="section fade-in" id="roadmap">
+  <div class="section-header">
+    <div class="section-num">9</div>
+    <h2 class="section-title">Build <em>Roadmap</em></h2>
+  </div>
+
+  <div class="roadmap">
+    <div class="roadmap-phase">
+      <div class="phase-label">Phase 1</div>
+      <div class="phase-title">MVP — Validate the Core</div>
+      <div class="phase-time">Months 1–3 · Solo / 2-person team</div>
+      <div class="phase-items">
+        ✦ Mood tracker + daily check-in<br>
+        ✦ AI Companion "Aura" (basic CBT responses)<br>
+        ✦ Guided breathing + sleep sounds (free)<br>
+        ✦ Student module (JEE/NEET focus — highest pain)<br>
+        ✦ Freemium + Serene Plus subscription<br>
+        ✦ Launch on Product Hunt + student communities
+      </div>
+    </div>
+
+    <div class="roadmap-phase">
+      <div class="phase-label">Phase 2</div>
+      <div class="phase-title">Expand Personas & Revenue</div>
+      <div class="phase-time">Months 4–8</div>
+      <div class="phase-items">
+        ✦ Teen Zone + Parenting Compass modules<br>
+        ✦ Women's Wellness module<br>
+        ✦ Expert marketplace (therapist booking)<br>
+        ✦ Serene Premium tier + family plan<br>
+        ✦ Hindi language support<br>
+        ✦ First B2B pilots (2–3 coaching centers)
+      </div>
+    </div>
+
+    <div class="roadmap-phase">
+      <div class="phase-label">Phase 3</div>
+      <div class="phase-title">Scale & B2B</div>
+      <div class="phase-time">Months 9–18</div>
+      <div class="phase-items">
+        ✦ Corporate Zen module + HR dashboard<br>
+        ✦ B2B enterprise sales motion<br>
+        ✦ Advanced AI personalization engine<br>
+        ✦ Digital products store (workbooks, courses)<br>
+        ✦ 3 more regional languages<br>
+        ✦ Insurance partnerships
+      </div>
+    </div>
+
+    <div class="roadmap-phase">
+      <div class="phase-label">Phase 4</div>
+      <div class="phase-title">Platform & Global</div>
+      <div class="phase-time">Year 2+</div>
+      <div class="phase-items">
+        ✦ Wearable integration (Apple Watch, Fitbit)<br>
+        ✦ Clinical-grade outcome tracking<br>
+        ✦ South East Asia & Middle East launch<br>
+        ✦ Serene for Seniors module<br>
+        ✦ API for other apps (Serene SDK)<br>
+        ✦ Series A fundraising
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 10. UNIQUE ANGLES -->
+<section class="section fade-in">
+  <div class="section-header">
+    <div class="section-num">10</div>
+    <h2 class="section-title">Your Unique <em>Moats</em></h2>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card" style="--accent:#C9A84C;">
+      <div class="card-icon">🧠</div>
+      <div class="card-title">Psychology + Engineering</div>
+      <div class="card-desc">You are uniquely positioned. Most apps are built by engineers who consult psychologists. You think clinically AND architecturally. Your AI will reflect actual psychological principles — not generic "take a deep breath" platitudes.</div>
+    </div>
+
+    <div class="card" style="--accent:#C4785A;">
+      <div class="card-icon">🇮🇳</div>
+      <div class="card-title">Cultural Contextuality</div>
+      <div class="card-desc">Western apps (Calm, Headspace) don't understand Indian family pressure, exam culture, or "log kya kahenge" anxiety. Serene will — making it deeply resonant for 1.4 billion people.</div>
+    </div>
+
+    <div class="card" style="--accent:#7C9A7E;">
+      <div class="card-icon">👨‍👩‍👧</div>
+      <div class="card-title">Family-Centric Design</div>
+      <div class="card-desc">Mental health is not individual in India — it's familial. Connecting parents and teens on the same platform is a breakthrough feature no competitor has cracked.</div>
+    </div>
+
+    <div class="card" style="--accent:#4A90D9;">
+      <div class="card-icon">🎯</div>
+      <div class="card-title">Exam-Season Surges</div>
+      <div class="card-desc">Board exams in March, JEE in April, NEET in May — predictable demand spikes. Run hyper-targeted campaigns in these windows. Seasonal marketing with a perennial product.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-title">Serene 🌿</div>
+  <p>A Blueprint Built for Namrata · Where Psychology Meets AI · 2025</p>
+  <p style="margin-top:8px; opacity:0.5; font-size:12px;">Next Step: Let's design the database schema, AI prompt architecture, or the app's screen flows — your call.</p>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

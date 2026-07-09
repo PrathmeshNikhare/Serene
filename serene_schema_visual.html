@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Serene — Database Schema Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0D1117;
+    --surface: #161B22;
+    --border: rgba(255,255,255,0.07);
+    --text: #E6EDF3;
+    --muted: #7D8590;
+    --green: #3FB950;
+    --blue: #58A6FF;
+    --orange: #F0883E;
+    --purple: #BC8CFF;
+    --pink: #FF7B72;
+    --teal: #39D353;
+    --gold: #D29922;
+    --cyan: #56D364;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 40px 24px 80px;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+
+  .page-header .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .page-header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .page-header p {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 48px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+
+  /* SECTION GROUPS */
+  .schema-section {
+    margin-bottom: 48px;
+  }
+
+  .schema-section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    display: inline-block;
+  }
+
+  .tables-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  /* TABLE CARD */
+  .table-card {
+    background: var(--surface);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: border-color 0.2s;
+  }
+
+  .table-card:hover { border-color: rgba(255,255,255,0.2); }
+
+  .table-header {
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .table-icon { font-size: 16px; }
+
+  .table-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .table-badge {
+    margin-left: auto;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .table-body { padding: 12px 0; }
+
+  .field {
+    display: grid;
+    grid-template-columns: 140px 1fr auto;
+    gap: 8px;
+    padding: 5px 18px;
+    font-size: 12px;
+    align-items: center;
+    transition: background 0.15s;
+  }
+
+  .field:hover { background: rgba(255,255,255,0.03); }
+
+  .field-name {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--blue);
+    font-size: 11.5px;
+  }
+
+  .field-name.pk { color: var(--gold); }
+  .field-name.fk { color: var(--orange); }
+
+  .field-type {
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+  }
+
+  .field-tag {
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .tag-pk { background: rgba(210,153,34,0.15); color: var(--gold); }
+  .tag-fk { background: rgba(240,136,62,0.15); color: var(--orange); }
+  .tag-idx { background: rgba(88,166,255,0.1); color: var(--blue); }
+  .tag-rls { background: rgba(63,185,80,0.1); color: var(--green); }
+  .tag-enum { background: rgba(188,140,255,0.1); color: var(--purple); }
+  .tag-json { background: rgba(255,123,114,0.12); color: var(--pink); }
+
+  .field-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 6px 18px;
+  }
+
+  /* CONNECTIONS */
+  .connections {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 48px;
+  }
+
+  .conn-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .conn-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 8px;
+  }
+
+  .conn-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 6px 0;
+    color: var(--muted);
+  }
+
+  .conn-from { color: var(--gold); }
+  .conn-arrow { color: var(--green); }
+  .conn-to { color: var(--blue); }
+  .conn-type { color: var(--purple); font-size: 10px; }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    gap: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 48px;
+  }
+
+  .stat-item {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+    border-right: 1px solid var(--border);
+  }
+
+  .stat-item:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--green);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-lbl {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="label">// PostgreSQL · Supabase · v1.0</div>
+  <h1>Serene Database Schema</h1>
+  <p>14 sections · 28 tables · Production-ready with RLS + indexes</p>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div> Primary Key</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div> Foreign Key</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div> Regular Field</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div> ENUM type</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--pink)"></div> JSONB</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> RLS Enabled</div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-num">28</div><div class="stat-lbl">Tables</div></div>
+  <div class="stat-item"><div class="stat-num">14</div><div class="stat-lbl">ENUMs</div></div>
+  <div class="stat-item"><div class="stat-num">19</div><div class="stat-lbl">RLS Policies</div></div>
+  <div class="stat-item"><div class="stat-num">12</div><div class="stat-lbl">Indexes</div></div>
+  <div class="stat-item"><div class="stat-num">3</div><div class="stat-lbl">Triggers</div></div>
+  <div class="stat-item"><div class="stat-num">3</div><div class="stat-lbl">Functions</div></div>
+</div>
+
+<!-- SECTION 1: USERS -->
+<div class="schema-section">
+  <div class="schema-section-title" style="background:rgba(88,166,255,0.1);color:var(--blue);">§1 Users & Profiles</div>
+  <div class="tables-row">
+
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-icon">👤</span>
+        <span class="table-name">profiles</span>
+        <span class="table-badge tag-rls">RLS ✓</span>
+      </div>
+      <div class="table-body">
+        <div class="field"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-tag tag-pk">PK</span></div>
+        <div class="field"><span class="field-name">display_name</span><span class="field-type">TEXT</span><span class="field-tag tag-idx">NOT NULL</span></div>
+        <div class="field"><span class="field-name">age</span><span class="field-type">INT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">13–80</span></div>
+        <div class="field"><span class="field-name">gender</span><span class="field-type">gender</span><span class="field-tag tag-enum">ENUM</span></div>
+        <div class="field"><span class="field-name">primary_persona</span><span class="field-type">user_persona</span><span class="field-tag tag-enum">ENUM</span></div>
+        <div class="field"><span class="field-name">subscription_tier</span><span class="field-type">subscription_tier</span><span class="field-tag tag-enum">ENUM</span></div>
+        <div class="field"><span class="field-name">streak_current</span><span class="field-type">INT</span><span class="field-tag tag-idx">IDX</span></div>
+        <div class="field"><span class="field-name">wellness_points</span><span class="field-type">INT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">gamify</span></div>
+        <div class="field"><span class="field-name">primary_stressors</span><span class="field-type">TEXT[]</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">array</span></div>
+        <div class="field"><span class="field-name">goals</span><span class="field-type">TEXT[]</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">array</span></div>
+        <div class="field"><span class="field-name">revenuecat_user_id</span><span class="field-type">TEXT</span><span class="field-tag tag-idx">UNIQUE</span></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-icon">📚</span>
+        <span class="table-name">student_profiles</span>
+        <span class="table-badge tag-rls">RLS ✓</span>
+      </div>
+      <div class="table-body">
+        <div class="field"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-tag tag-pk">PK</span></div>
+        <div class="field"><span class="field-name fk">user_id</span><span class="field-type">UUID</span><span class="field-tag tag-fk">FK</span></div>
+        <div class="field"><span class="field-name">exam_target</span><span class="field-type">exam_type</span><span class="field-tag tag-enum">ENUM</span></div>
+        <div class="field"><span class="field-name">exam_year</span><span class="field-type">INT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">e.g.2026</span></div>
+        <div class="field"><span class="field-name">current_class</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">10/11/12</span></div>
+        <div class="field"><span class="field-name">coaching_center</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">Allen etc</span></div>
+        <div class="field"><span class="field-name">study_hours_day</span><span class="field-type">NUMERIC</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">avg</span></div>
+        <div class="field"><span class="field-name">weak_subjects</span><span class="field-type">TEXT[]</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">array</span></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-icon">👩</span>
+        <span class="table-name">women_profiles</span>
+        <span class="table-badge tag-rls">RLS ✓</span>
+      </div>
+      <div class="table-body">
+        <div class="field"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-tag tag-pk">PK</span></div>
+        <div class="field"><span class="field-name fk">user_id</span><span class="field-type">UUID</span><span class="field-tag tag-fk">FK</span></div>
+        <div class="field"><span class="field-name">cycle_tracking_on</span><span class="field-type">BOOLEAN</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">opt-in</span></div>
+        <div class="field"><span class="field-name">last_period_date</span><span class="field-type">DATE</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">private</span></div>
+        <div class="field"><span class="field-name">avg_cycle_length</span><span class="field-type">INT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">days</span></div>
+        <div class="field"><span class="field-name">life_stage</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">segment</span></div>
+        <div class="field"><span class="field-name">primary_stressor</span><span class="field-type">TEXT[]</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">array</span></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-icon">💼</span>
+        <span class="table-name">corporate_profiles</span>
+        <span class="table-badge tag-rls">RLS ✓</span>
+      </div>
+      <div class="table-body">
+        <div class="field"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-tag tag-pk">PK</span></div>
+        <div class="field"><span class="field-name fk">user_id</span><span class="field-type">UUID</span><span class="field-tag tag-fk">FK</span></div>
+        <div class="field"><span class="field-name">industry</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">segment</span></div>
+        <div class="field"><span class="field-name">role_level</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">seniority</span></div>
+        <div class="field"><span class="field-name">work_hours_day</span><span class="field-type">NUMERIC</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">avg</span></div>
+        <div class="field"><span class="field-name fk">company_id</span><span class="field-type">UUID</span><span class="field-tag tag-fk">→ orgs</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECTION 2: MOOD -->
+<div class="schema-section">
+  <div class="schema-section-title" style="background:rgba(63,185,80,0.1);color:var(--green);">§2 Mood Tracking</div>
+  <div class="tables-row">
+
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-icon">😊</span>
+        <span class="table-name">mood_logs</span>
+        <span class="table-badge tag-rls">RLS ✓</span>
+      </div>
+      <div class="table-body">
+        <div class="field"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-tag tag-pk">PK</span></div>
+        <div class="field"><span class="field-name fk">user_id</span><span class="field-type">UUID</span><span class="field-tag tag-fk">FK</span></div>
+        <div class="field"><span class="field-name">mood</span><span class="field-type">mood_level</span><span class="field-tag tag-enum">ENUM</span></div>
+        <div class="field"><span class="field-name">mood_score</span><span class="field-type">INT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">computed</span></div>
+        <div class="field"><span class="field-name">emotions</span><span class="field-type">TEXT[]</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">array</span></div>
+        <div class="field"><span class="field-name">triggers</span><span class="field-type">TEXT[]</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">array</span></div>
+        <div class="field"><span class="field-name">ai_insight</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">Aura</span></div>
+        <div class="field"><span class="field-name">crisis_flag</span><span class="field-type">crisis_level</span><span class="field-tag tag-enum">ENUM</span></div>
+        <div class="field"><span class="field-name">time_of_day</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">computed</span></div>
+        <div class="field"><span class="field-name">sleep_last_night</span><span class="field-type">NUMERIC</span><span class="field-tag tag-idx">IDX</span></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-icon">📊</span>
+        <span class="table-name">mood_weekly_summary</span>
+        <span class="table-badge" style="background:rgba(88,166,255,0.1);color:var(--blue);">cache</span>
+      </div>
+      <div class="table-body">
+        <div class="field"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-tag tag-pk">PK</span></div>
+        <div class="field"><span class="field-name fk">user_id</span><span class="field-type">UUID</span><span class="field-tag tag-fk">FK</span></div>
+        <div class="field"><span class="field-name">week_start</span><span class="field-type">DATE</span><span class="field-tag tag-idx">UNIQUE</span></div>
+        <div class="field"><span class="field-name">avg_mood</span><span class="field-type">NUMERIC</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">3,2</span></div>
+        <div class="field"><span class="field-name">trend</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">↑↓→</span></div>
+        <div class="field"><span class="field-name">ai_weekly_insight</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">Aura</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECTION 3: JOURNAL & SESSIONS -->
+<div class="schema-section">
+  <div class="schema-section-title" style="background:rgba(240,136,62,0.1);color:var(--orange);">§3–4 Journal & Sessions</div>
+  <div class="tables-row">
+
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-icon">📓</span>
+        <span class="table-name">journal_entries</span>
+        <span class="table-badge tag-rls">RLS ✓</span>
+      </div>
+      <div class="table-body">
+        <div class="field"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-tag tag-pk">PK</span></div>
+        <div class="field"><span class="field-name fk">user_id</span><span class="field-type">UUID</span><span class="field-tag tag-fk">FK</span></div>
+        <div class="field"><span class="field-name">content</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,123,114,0.1);color:var(--pink)">encrypted</span></div>
+        <div class="field"><span class="field-name">entry_type</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">free/cbt</span></div>
+        <div class="field"><span class="field-name">mood_before</span><span class="field-type">mood_level</span><span class="field-tag tag-enum">ENUM</span></div>
+        <div class="field"><span class="field-name">mood_after</span><span class="field-type">mood_level</span><span class="field-tag tag-enum">ENUM</span></div>
+        <div class="field"><span class="field-name">ai_themes</span><span class="field-type">TEXT[]</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">NLP</span></div>
+        <div class="field"><span class="field-name">ai_response</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">Aura</span></div>
+        <div class="field"><span class="field-name">crisis_flag</span><span class="field-type">crisis_level</span><span class="field-tag tag-enum">ENUM</span></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-icon">📚</span>
+        <span class="table-name">content_library</span>
+        <span class="table-badge" style="background:rgba(188,140,255,0.1);color:var(--purple);">shared</span>
+      </div>
+      <div class="table-body">
+        <div class="field"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-tag tag-pk">PK</span></div>
+        <div class="field"><span class="field-name">title</span><span class="field-type">TEXT</span><span class="field-tag tag-idx">NOT NULL</span></div>
+        <div class="field"><span class="field-name">session_type</span><span class="field-type">session_type</span><span class="field-tag tag-enum">ENUM</span></div>
+        <div class="field"><span class="field-name">category</span><span class="field-type">content_category</span><span class="field-tag tag-enum">ENUM</span></div>
+        <div class="field"><span class="field-name">is_free</span><span class="field-type">BOOLEAN</span><span class="field-tag" style="background:rgba(63,185,80,0.1);color:var(--green)">paywall</span></div>
+        <div class="field"><span class="field-name">min_tier</span><span class="field-type">subscription_tier</span><span class="field-tag tag-enum">ENUM</span></div>
+        <div class="field"><span class="field-name">audio_url</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">MP3</span></div>
+        <div class="field"><span class="field-name">target_personas</span><span class="field-type">user_persona[]</span><span class="field-tag tag-enum">array</span></div>
+        <div class="field"><span class="field-name">tags</span><span class="field-type">TEXT[]</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">search</span></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-icon">▶️</span>
+        <span class="table-name">session_logs</span>
+        <span class="table-badge tag-rls">RLS ✓</span>
+      </div>
+      <div class="table-body">
+        <div class="field"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-tag tag-pk">PK</span></div>
+        <div class="field"><span class="field-name fk">user_id</span><span class="field-type">UUID</span><span class="field-tag tag-fk">FK</span></div>
+        <div class="field"><span class="field-name fk">content_id</span><span class="field-type">UUID</span><span class="field-tag tag-fk">FK</span></div>
+        <div class="field"><span class="field-name">completed</span><span class="field-type">BOOLEAN</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">done?</span></div>
+        <div class="field"><span class="field-name">percent_done</span><span class="field-type">INT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">0–100</span></div>
+        <div class="field"><span class="field-name">mood_before</span><span class="field-type">mood_level</span><span class="field-tag tag-enum">ENUM</span></div>
+        <div class="field"><span class="field-name">mood_after</span><span class="field-type">mood_level</span><span class="field-tag tag-enum">ENUM</span></div>
+        <div class="field"><span class="field-name">rating</span><span class="field-type">INT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">1–5</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECTION 5: AURA AI -->
+<div class="schema-section">
+  <div class="schema-section-title" style="background:rgba(188,140,255,0.1);color:var(--purple);">§5 Aura — AI Companion</div>
+  <div class="tables-row">
+
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-icon">🤖</span>
+        <span class="table-name">aura_conversations</span>
+        <span class="table-badge tag-rls">RLS ✓</span>
+      </div>
+      <div class="table-body">
+        <div class="field"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-tag tag-pk">PK</span></div>
+        <div class="field"><span class="field-name fk">user_id</span><span class="field-type">UUID</span><span class="field-tag tag-fk">FK</span></div>
+        <div class="field"><span class="field-name">title</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">auto-gen</span></div>
+        <div class="field"><span class="field-name">persona_context</span><span class="field-type">user_persona</span><span class="field-tag tag-enum">ENUM</span></div>
+        <div class="field"><span class="field-name">crisis_level_peak</span><span class="field-type">crisis_level</span><span class="field-tag tag-enum">ENUM</span></div>
+        <div class="field"><span class="field-name">escalated_to_human</span><span class="field-type">BOOLEAN</span><span class="field-tag" style="background:rgba(255,123,114,0.1);color:var(--pink)">safety</span></div>
+        <div class="field"><span class="field-name">total_tokens_used</span><span class="field-type">INT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">cost</span></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-icon">💬</span>
+        <span class="table-name">aura_messages</span>
+        <span class="table-badge tag-rls">RLS ✓</span>
+      </div>
+      <div class="table-body">
+        <div class="field"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-tag tag-pk">PK</span></div>
+        <div class="field"><span class="field-name fk">conversation_id</span><span class="field-type">UUID</span><span class="field-tag tag-fk">FK</span></div>
+        <div class="field"><span class="field-name fk">user_id</span><span class="field-type">UUID</span><span class="field-tag tag-fk">FK</span></div>
+        <div class="field"><span class="field-name">role</span><span class="field-type">message_role</span><span class="field-tag tag-enum">ENUM</span></div>
+        <div class="field"><span class="field-name">content</span><span class="field-type">TEXT</span><span class="field-tag tag-idx">NOT NULL</span></div>
+        <div class="field"><span class="field-name">technique_used</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">CBT/DBT</span></div>
+        <div class="field"><span class="field-name">crisis_flag</span><span class="field-type">crisis_level</span><span class="field-tag tag-enum">ENUM</span></div>
+        <div class="field"><span class="field-name">tokens_used</span><span class="field-type">INT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">cost</span></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-icon">🔢</span>
+        <span class="table-name">aura_daily_usage</span>
+        <span class="table-badge tag-rls">RLS ✓</span>
+      </div>
+      <div class="table-body">
+        <div class="field"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-tag tag-pk">PK</span></div>
+        <div class="field"><span class="field-name fk">user_id</span><span class="field-type">UUID</span><span class="field-tag tag-fk">FK</span></div>
+        <div class="field"><span class="field-name">usage_date</span><span class="field-type">DATE</span><span class="field-tag tag-idx">UNIQUE</span></div>
+        <div class="field"><span class="field-name">message_count</span><span class="field-type">INT</span><span class="field-tag" style="background:rgba(255,123,114,0.1);color:var(--pink)">5/day free</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECTION 6-7: GAMIFICATION & SAFETY -->
+<div class="schema-section">
+  <div class="schema-section-title" style="background:rgba(210,153,34,0.1);color:var(--gold);">§6-8 Gamification · Notifications · Crisis</div>
+  <div class="tables-row">
+
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-icon">🏆</span>
+        <span class="table-name">badges + user_badges</span>
+        <span class="table-badge tag-rls">RLS ✓</span>
+      </div>
+      <div class="table-body">
+        <div class="field"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-tag tag-pk">PK</span></div>
+        <div class="field"><span class="field-name">name</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">display</span></div>
+        <div class="field"><span class="field-name">badge_type</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">streak/ms</span></div>
+        <div class="field"><span class="field-name">criteria</span><span class="field-type">JSONB</span><span class="field-tag tag-json">JSON</span></div>
+        <div class="field"><span class="field-name">points</span><span class="field-type">INT</span><span class="field-tag" style="background:rgba(210,153,34,0.1);color:var(--gold)">XP</span></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-icon">🚨</span>
+        <span class="table-name">crisis_events</span>
+        <span class="table-badge" style="background:rgba(255,123,114,0.1);color:var(--pink);">safety</span>
+      </div>
+      <div class="table-body">
+        <div class="field"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-tag tag-pk">PK</span></div>
+        <div class="field"><span class="field-name fk">user_id</span><span class="field-type">UUID</span><span class="field-tag tag-fk">FK</span></div>
+        <div class="field"><span class="field-name">source</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">origin</span></div>
+        <div class="field"><span class="field-name">crisis_level</span><span class="field-type">crisis_level</span><span class="field-tag tag-enum">ENUM</span></div>
+        <div class="field"><span class="field-name">helpline_shown</span><span class="field-type">BOOLEAN</span><span class="field-tag" style="background:rgba(255,123,114,0.1);color:var(--pink)">required</span></div>
+        <div class="field"><span class="field-name">resolved</span><span class="field-type">BOOLEAN</span><span class="field-tag tag-idx">IDX</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECTION 9-14: B2B, PAYMENTS, MARKETPLACE -->
+<div class="schema-section">
+  <div class="schema-section-title" style="background:rgba(86,211,100,0.1);color:var(--cyan);">§9–14 B2B · Payments · Marketplace · Assessments</div>
+  <div class="tables-row">
+
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-icon">🏢</span>
+        <span class="table-name">organizations</span>
+        <span class="table-badge" style="background:rgba(86,211,100,0.1);color:var(--cyan);">B2B</span>
+      </div>
+      <div class="table-body">
+        <div class="field"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-tag tag-pk">PK</span></div>
+        <div class="field"><span class="field-name">name</span><span class="field-type">TEXT</span><span class="field-tag tag-idx">NOT NULL</span></div>
+        <div class="field"><span class="field-name">org_type</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">school/corp</span></div>
+        <div class="field"><span class="field-name">seat_count</span><span class="field-type">INT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">licensed</span></div>
+        <div class="field"><span class="field-name">contract_end</span><span class="field-type">DATE</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">expiry</span></div>
+        <div class="field"><span class="field-name">monthly_fee</span><span class="field-type">NUMERIC</span><span class="field-tag" style="background:rgba(86,211,100,0.1);color:var(--cyan)">₹</span></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-icon">💳</span>
+        <span class="table-name">payment_history</span>
+        <span class="table-badge tag-rls">RLS ✓</span>
+      </div>
+      <div class="table-body">
+        <div class="field"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-tag tag-pk">PK</span></div>
+        <div class="field"><span class="field-name fk">user_id</span><span class="field-type">UUID</span><span class="field-tag tag-fk">FK</span></div>
+        <div class="field"><span class="field-name">amount</span><span class="field-type">NUMERIC</span><span class="field-tag" style="background:rgba(86,211,100,0.1);color:var(--cyan)">₹</span></div>
+        <div class="field"><span class="field-name">gateway</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">razorpay</span></div>
+        <div class="field"><span class="field-name">gateway_txn_id</span><span class="field-type">TEXT</span><span class="field-tag tag-idx">UNIQUE</span></div>
+        <div class="field"><span class="field-name">status</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">success?</span></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-icon">🧠</span>
+        <span class="table-name">assessments</span>
+        <span class="table-badge tag-rls">RLS ✓</span>
+      </div>
+      <div class="table-body">
+        <div class="field"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-tag tag-pk">PK</span></div>
+        <div class="field"><span class="field-name fk">user_id</span><span class="field-type">UUID</span><span class="field-tag tag-fk">FK</span></div>
+        <div class="field"><span class="field-name">assessment_type</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">PHQ9/GAD7</span></div>
+        <div class="field"><span class="field-name">responses</span><span class="field-type">JSONB</span><span class="field-tag tag-json">JSON</span></div>
+        <div class="field"><span class="field-name">total_score</span><span class="field-type">INT</span><span class="field-tag tag-idx">IDX</span></div>
+        <div class="field"><span class="field-name">severity</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">mild/sev</span></div>
+        <div class="field"><span class="field-name">ai_interpretation</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">Aura</span></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-icon">🧑‍⚕️</span>
+        <span class="table-name">therapists + bookings</span>
+        <span class="table-badge" style="background:rgba(86,211,100,0.1);color:var(--cyan);">marketplace</span>
+      </div>
+      <div class="table-body">
+        <div class="field"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-tag tag-pk">PK</span></div>
+        <div class="field"><span class="field-name">name + credentials</span><span class="field-type">TEXT</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">profile</span></div>
+        <div class="field"><span class="field-name">specializations</span><span class="field-type">TEXT[]</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">CBT/DBT</span></div>
+        <div class="field"><span class="field-name">session_fee_60min</span><span class="field-type">NUMERIC</span><span class="field-tag" style="background:rgba(86,211,100,0.1);color:var(--cyan)">₹</span></div>
+        <div class="field"><span class="field-name">platform_cut_pct</span><span class="field-type">INT</span><span class="field-tag" style="background:rgba(210,153,34,0.1);color:var(--gold)">25%</span></div>
+        <div class="field"><span class="field-name">is_verified</span><span class="field-type">BOOLEAN</span><span class="field-tag" style="background:rgba(255,255,255,0.05);color:var(--muted)">RCI check</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CONNECTIONS -->
+<div class="connections">
+  <div class="conn-title">// Key Foreign Key Relationships</div>
+  <div class="conn-grid">
+    <div class="conn-row"><span class="conn-from">profiles</span><span class="conn-arrow">←←</span><span class="conn-to">auth.users</span><span class="conn-type">(auto trigger)</span></div>
+    <div class="conn-row"><span class="conn-from">mood_logs</span><span class="conn-arrow">→</span><span class="conn-to">profiles</span><span class="conn-type">(user_id)</span></div>
+    <div class="conn-row"><span class="conn-from">journal_entries</span><span class="conn-arrow">→</span><span class="conn-to">profiles</span><span class="conn-type">(user_id)</span></div>
+    <div class="conn-row"><span class="conn-from">aura_messages</span><span class="conn-arrow">→</span><span class="conn-to">aura_conversations</span><span class="conn-type">(conv_id)</span></div>
+    <div class="conn-row"><span class="conn-from">session_logs</span><span class="conn-arrow">→</span><span class="conn-to">content_library</span><span class="conn-type">(content_id)</span></div>
+    <div class="conn-row"><span class="conn-from">student_profiles</span><span class="conn-arrow">→</span><span class="conn-to">profiles</span><span class="conn-type">(1:1 extend)</span></div>
+    <div class="conn-row"><span class="conn-from">crisis_events</span><span class="conn-arrow">→</span><span class="conn-to">profiles</span><span class="conn-type">(safety link)</span></div>
+    <div class="conn-row"><span class="conn-from">therapy_bookings</span><span class="conn-arrow">→</span><span class="conn-to">therapists</span><span class="conn-type">(marketplace)</span></div>
+    <div class="conn-row"><span class="conn-from">org_members</span><span class="conn-arrow">→</span><span class="conn-to">organizations</span><span class="conn-type">(B2B)</span></div>
+    <div class="conn-row"><span class="conn-from">user_purchases</span><span class="conn-arrow">→</span><span class="conn-to">digital_products</span><span class="conn-type">(store)</span></div>
+  </div>
+</div>
+
+</body>
+</html>

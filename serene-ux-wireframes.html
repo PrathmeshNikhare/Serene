@@ -1,0 +1,2455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Serene — UX Screen Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Literata:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sage: #6B9E78;
+    --sage-2: #A8CEAD;
+    --sage-pale: #EBF3EC;
+    --terra: #C4724A;
+    --terra-light: #E8A880;
+    --gold: #C8A94A;
+    --night: #1A2130;
+    --slate: #2E4057;
+    --mist: #8BA3B8;
+    --cream: #F6F2EC;
+    --white: #FEFDFB;
+
+    /* Screen phone dims */
+    --phone-w: 360px;
+    --phone-h: 720px;
+    --radius: 36px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: #111820;
+    color: #E6EDF3;
+    min-height: 100vh;
+  }
+
+  /* ── PAGE HEADER ─────────────────────────────── */
+  .page-header {
+    padding: 56px 48px 40px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page-header::before {
+    content: '';
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(107,158,120,0.12) 0%, transparent 70%);
+    top: -200px; right: -100px;
+  }
+
+  .ph-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--sage-2);
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+
+  .ph-title {
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 800;
+    line-height: 1;
+    color: #F0F6F1;
+    margin-bottom: 12px;
+  }
+
+  .ph-title em { font-style: italic; color: var(--sage); font-weight: 300; font-family: 'Literata', serif; }
+
+  .ph-sub {
+    font-size: 14px;
+    color: var(--mist);
+    font-weight: 300;
+    max-width: 560px;
+    line-height: 1.6;
+  }
+
+  /* ── FLOW NAV ─────────────────────────────────── */
+  .flow-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(17,24,32,0.95);
+    backdrop-filter: blur(12px);
+    padding: 14px 48px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .flow-nav a {
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--mist);
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .flow-nav a:hover,
+  .flow-nav a.active {
+    background: rgba(107,158,120,0.15);
+    border-color: var(--sage);
+    color: var(--sage-2);
+  }
+
+  /* ── FLOW SECTION ────────────────────────────── */
+  .flow-section {
+    padding: 64px 48px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .flow-section-header {
+    margin-bottom: 48px;
+  }
+
+  .flow-num {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .flow-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #F0F6F1;
+    margin-bottom: 6px;
+  }
+
+  .flow-desc {
+    font-size: 13px;
+    color: var(--mist);
+    font-weight: 300;
+    max-width: 600px;
+  }
+
+  /* ── SCREEN SCROLL ROW ───────────────────────── */
+  .screens-row {
+    display: flex;
+    gap: 32px;
+    overflow-x: auto;
+    padding-bottom: 20px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(107,158,120,0.3) transparent;
+  }
+
+  .screens-row::-webkit-scrollbar { height: 4px; }
+  .screens-row::-webkit-scrollbar-thumb { background: rgba(107,158,120,0.3); border-radius: 2px; }
+
+  /* ── PHONE WRAPPER ───────────────────────────── */
+  .phone-wrap {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .screen-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--sage-2);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  .screen-sublabel {
+    font-size: 11px;
+    color: var(--mist);
+    text-align: center;
+    max-width: var(--phone-w);
+    line-height: 1.5;
+    font-weight: 300;
+  }
+
+  .phone {
+    width: var(--phone-w);
+    height: var(--phone-h);
+    border-radius: var(--radius);
+    background: #1C2433;
+    border: 2px solid rgba(255,255,255,0.08);
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.4),
+      0 32px 80px rgba(0,0,0,0.5),
+      inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+
+  /* Status bar */
+  .status-bar {
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.7);
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    z-index: 10;
+  }
+
+  .status-bar.dark { color: rgba(0,0,0,0.6); }
+
+  .status-icons { display: flex; gap: 4px; align-items: center; font-size: 10px; }
+
+  /* Screen content fills phone */
+  .screen-content {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    overflow: hidden;
+    border-radius: calc(var(--radius) - 2px);
+  }
+
+  /* ============================================
+     INDIVIDUAL SCREENS
+  ============================================ */
+
+  /* S1 — SPLASH */
+  .s-splash {
+    background: linear-gradient(160deg, #0F1C14 0%, #1A2E1E 50%, #0D1A24 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .splash-orb {
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #7BC47A, #3D7A4E 50%, #1A4A28);
+    box-shadow: 0 0 60px rgba(107,158,120,0.4), 0 0 120px rgba(107,158,120,0.15);
+    margin-bottom: 28px;
+    position: relative;
+    animation: floatOrb 4s ease-in-out infinite;
+  }
+
+  @keyframes floatOrb {
+    0%, 100% { transform: translateY(0); box-shadow: 0 0 60px rgba(107,158,120,0.4); }
+    50% { transform: translateY(-8px); box-shadow: 0 12px 80px rgba(107,158,120,0.5); }
+  }
+
+  .splash-name {
+    font-family: 'Literata', serif;
+    font-size: 42px;
+    font-weight: 300;
+    color: #E8F5E9;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  .splash-tagline {
+    font-size: 12px;
+    color: rgba(168,206,173,0.7);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 300;
+  }
+
+  /* S2 — ONBOARDING SLIDES */
+  .s-onboard {
+    background: var(--cream);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ob-progress {
+    display: flex;
+    gap: 6px;
+    padding: 40px 24px 0;
+  }
+
+  .ob-dot {
+    height: 3px;
+    border-radius: 2px;
+    flex: 1;
+    background: rgba(0,0,0,0.1);
+  }
+
+  .ob-dot.active { background: var(--sage); }
+
+  .ob-illustration {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .ob-illus-circle {
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--sage-pale), #D4EAD6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 72px;
+  }
+
+  .ob-text {
+    padding: 0 28px 28px;
+  }
+
+  .ob-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--night);
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .ob-body {
+    font-size: 13px;
+    color: var(--slate);
+    line-height: 1.6;
+    font-family: 'Literata', serif;
+    font-weight: 300;
+    margin-bottom: 28px;
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 16px;
+    border-radius: 16px;
+    background: var(--night);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .btn-secondary {
+    width: 100%;
+    padding: 14px;
+    border-radius: 16px;
+    background: transparent;
+    color: var(--slate);
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    font-family: 'Outfit', sans-serif;
+    margin-top: 10px;
+  }
+
+  /* S3 — SIGN UP */
+  .s-signup {
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+    padding: 48px 24px 28px;
+  }
+
+  .signup-back {
+    font-size: 20px;
+    color: var(--slate);
+    margin-bottom: 24px;
+    cursor: pointer;
+  }
+
+  .signup-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--night);
+    margin-bottom: 6px;
+  }
+
+  .signup-sub {
+    font-size: 13px;
+    color: var(--mist);
+    margin-bottom: 32px;
+    font-family: 'Literata', serif;
+    font-style: italic;
+  }
+
+  .input-group {
+    margin-bottom: 14px;
+  }
+
+  .input-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--slate);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .input-field {
+    width: 100%;
+    padding: 13px 16px;
+    border-radius: 12px;
+    border: 1.5px solid rgba(0,0,0,0.1);
+    background: var(--cream);
+    font-size: 14px;
+    font-family: 'Outfit', sans-serif;
+    color: var(--night);
+  }
+
+  .input-field.focused { border-color: var(--sage); background: var(--sage-pale); }
+
+  .divider-or {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+    font-size: 12px;
+    color: var(--mist);
+  }
+
+  .divider-or::before, .divider-or::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(0,0,0,0.08);
+  }
+
+  .btn-google {
+    width: 100%;
+    padding: 13px;
+    border-radius: 12px;
+    border: 1.5px solid rgba(0,0,0,0.1);
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--night);
+    cursor: pointer;
+  }
+
+  .google-g {
+    width: 18px; height: 18px;
+    background: linear-gradient(135deg, #4285F4, #EA4335, #FBBC05, #34A853);
+    border-radius: 50%;
+    font-size: 10px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+
+  /* S4 — QUIZ / PERSONA */
+  .s-quiz {
+    background: var(--night);
+    display: flex;
+    flex-direction: column;
+    padding: 48px 24px 28px;
+  }
+
+  .quiz-step {
+    font-size: 11px;
+    color: var(--sage-2);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .quiz-q {
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+
+  .quiz-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 32px;
+    font-family: 'Literata', serif;
+  }
+
+  .persona-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+
+  .persona-opt {
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1.5px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .persona-opt.selected {
+    border-color: var(--sage);
+    background: rgba(107,158,120,0.12);
+  }
+
+  .persona-opt-icon {
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .persona-opt.selected .persona-opt-icon {
+    background: rgba(107,158,120,0.2);
+  }
+
+  .persona-opt-label { font-size: 14px; font-weight: 600; color: white; }
+  .persona-opt-desc { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+
+  /* S5 — HOME */
+  .s-home {
+    background: var(--cream);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .home-header {
+    background: linear-gradient(160deg, var(--night) 0%, var(--slate) 100%);
+    padding: 40px 20px 32px;
+    border-radius: 0 0 28px 28px;
+  }
+
+  .home-greeting {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 4px;
+  }
+
+  .home-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 16px;
+  }
+
+  .mood-checkin-card {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 16px;
+  }
+
+  .mood-q { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 14px; }
+
+  .mood-faces {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .mood-face {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+  }
+
+  .mood-face-icon {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid transparent;
+    transition: all 0.15s;
+  }
+
+  .mood-face.active .mood-face-icon {
+    background: rgba(107,158,120,0.2);
+    border-color: var(--sage);
+    transform: scale(1.15);
+  }
+
+  .mood-face-lbl { font-size: 9px; color: rgba(255,255,255,0.4); text-align: center; }
+
+  .home-body { padding: 20px 16px; }
+
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .sec-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--night);
+  }
+
+  .sec-all {
+    font-size: 11px;
+    color: var(--sage);
+    font-weight: 600;
+  }
+
+  .streak-bar {
+    background: white;
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .streak-flame { font-size: 28px; }
+  .streak-num { font-size: 22px; font-weight: 800; color: var(--terra); }
+  .streak-lbl { font-size: 11px; color: var(--mist); }
+
+  .session-cards {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    margin-bottom: 16px;
+  }
+
+  .session-card {
+    flex-shrink: 0;
+    width: 130px;
+    border-radius: 16px;
+    padding: 14px;
+    background: white;
+    border: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .sc-icon { font-size: 24px; margin-bottom: 8px; }
+  .sc-title { font-size: 12px; font-weight: 600; color: var(--night); margin-bottom: 3px; line-height: 1.2; }
+  .sc-dur { font-size: 10px; color: var(--mist); }
+  .sc-badge {
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 100px;
+    font-weight: 600;
+    display: inline-block;
+    margin-top: 6px;
+  }
+  .sc-badge.free { background: rgba(107,158,120,0.15); color: var(--sage); }
+  .sc-badge.premium { background: rgba(200,169,74,0.15); color: var(--gold); }
+
+  .aura-banner {
+    background: linear-gradient(135deg, var(--slate), #1A3A4A);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+
+  .aura-orb-small {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #7BC47A, #2D5C38);
+    flex-shrink: 0;
+  }
+
+  .aura-banner-text { flex: 1; }
+  .aura-banner-name { font-size: 13px; font-weight: 700; color: white; margin-bottom: 2px; }
+  .aura-banner-sub { font-size: 11px; color: rgba(255,255,255,0.45); }
+  .aura-banner-arrow { font-size: 18px; color: rgba(255,255,255,0.3); }
+
+  /* TAB BAR */
+  .tab-bar {
+    height: 64px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    display: flex;
+    background: white;
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+  }
+
+  .tab-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    cursor: pointer;
+    font-size: 9px;
+    color: var(--mist);
+    font-weight: 500;
+  }
+
+  .tab-item.active { color: var(--sage); }
+
+  .tab-icon { font-size: 20px; }
+
+  .tab-dot {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--sage);
+    margin-top: -6px;
+  }
+
+  /* S6 — MOOD LOG DETAIL */
+  .s-mood {
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+  }
+
+  .modal-header {
+    padding: 40px 20px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+
+  .modal-back { font-size: 18px; color: var(--slate); cursor: pointer; }
+  .modal-title { font-size: 17px; font-weight: 700; color: var(--night); }
+
+  .mood-body { padding: 20px; flex: 1; overflow-y: auto; }
+
+  .mood-selected {
+    text-align: center;
+    padding: 24px 0;
+  }
+
+  .mood-big-emoji { font-size: 64px; margin-bottom: 8px; }
+  .mood-big-label { font-size: 20px; font-weight: 700; color: var(--night); }
+
+  .tag-select-title { font-size: 13px; font-weight: 600; color: var(--slate); margin-bottom: 12px; }
+
+  .tag-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .tag-chip {
+    padding: 7px 14px;
+    border-radius: 100px;
+    border: 1.5px solid rgba(0,0,0,0.1);
+    font-size: 12px;
+    color: var(--slate);
+    cursor: pointer;
+  }
+
+  .tag-chip.selected {
+    border-color: var(--sage);
+    background: var(--sage-pale);
+    color: var(--sage);
+    font-weight: 600;
+  }
+
+  .textarea-wrap {
+    background: var(--cream);
+    border-radius: 14px;
+    padding: 14px;
+    min-height: 80px;
+    margin-bottom: 20px;
+  }
+
+  .textarea-placeholder { font-size: 13px; color: var(--mist); font-family: 'Literata', serif; font-style: italic; }
+
+  /* S7 — AURA CHAT */
+  .s-aura {
+    background: #0D1117;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .aura-header {
+    background: linear-gradient(160deg, #0F1C14, #162B1E);
+    padding: 40px 20px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(107,158,120,0.15);
+  }
+
+  .aura-orb-med {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #7BC47A, #2D5C38);
+    box-shadow: 0 0 16px rgba(107,158,120,0.3);
+  }
+
+  .aura-header-name { font-size: 16px; font-weight: 700; color: white; }
+  .aura-status { font-size: 10px; color: var(--sage-2); display: flex; align-items: center; gap: 4px; }
+  .aura-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--sage); }
+  .aura-header-back { margin-right: auto; margin-left: -8px; font-size: 18px; color: rgba(255,255,255,0.4); }
+
+  .chat-messages {
+    flex: 1;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+  }
+
+  .msg {
+    max-width: 80%;
+    border-radius: 16px;
+    padding: 12px 14px;
+    font-size: 13px;
+    line-height: 1.5;
+    font-family: 'Literata', serif;
+  }
+
+  .msg.aura {
+    background: rgba(107,158,120,0.12);
+    border: 1px solid rgba(107,158,120,0.2);
+    color: #D0E8D2;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+  }
+
+  .msg.user {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.85);
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+
+  .technique-tag {
+    font-size: 9px;
+    background: rgba(107,158,120,0.15);
+    color: var(--sage-2);
+    padding: 2px 8px;
+    border-radius: 100px;
+    margin-bottom: 6px;
+    display: inline-block;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .chat-input-wrap {
+    padding: 12px 16px 20px;
+    display: flex;
+    gap: 10px;
+    background: #0D1117;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .chat-input {
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 10px 16px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    font-family: 'Literata', serif;
+    font-style: italic;
+  }
+
+  .chat-send {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--sage);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .crisis-bar {
+    background: rgba(196,114,74,0.15);
+    border: 1px solid rgba(196,114,74,0.3);
+    border-radius: 12px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 16px 12px;
+  }
+
+  .crisis-bar-icon { font-size: 16px; }
+  .crisis-bar-text { font-size: 11px; color: var(--terra-light); }
+  .crisis-bar-btn { font-size: 11px; font-weight: 700; color: var(--terra); margin-left: auto; white-space: nowrap; }
+
+  /* S8 — SESSION PLAYER */
+  .s-session {
+    background: linear-gradient(180deg, #0A1F12 0%, #1A2E3A 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .session-header {
+    width: 100%;
+    padding: 40px 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .sess-back { font-size: 18px; color: rgba(255,255,255,0.4); cursor: pointer; }
+  .sess-title { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.7); }
+  .sess-fav { font-size: 18px; color: rgba(255,255,255,0.4); }
+
+  .session-visual {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .breathing-circle {
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, rgba(107,158,120,0.3), rgba(26,46,58,0.5));
+    border: 2px solid rgba(107,158,120,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: var(--sage-2);
+    font-weight: 600;
+    letter-spacing: 1px;
+    animation: breatheCircle 4s ease-in-out infinite;
+    box-shadow: 0 0 40px rgba(107,158,120,0.15), 0 0 80px rgba(107,158,120,0.05);
+  }
+
+  @keyframes breatheCircle {
+    0%, 100% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.18); opacity: 1; }
+  }
+
+  .session-instruction {
+    font-size: 18px;
+    font-family: 'Literata', serif;
+    font-weight: 300;
+    color: rgba(255,255,255,0.8);
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  .session-timer {
+    font-size: 48px;
+    font-weight: 800;
+    color: white;
+    letter-spacing: -2px;
+  }
+
+  .session-controls {
+    width: 100%;
+    padding: 0 24px 40px;
+  }
+
+  .progress-track {
+    height: 3px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    margin-bottom: 24px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 35%;
+    background: var(--sage);
+    border-radius: 2px;
+  }
+
+  .controls-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+  }
+
+  .ctrl-btn {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+  }
+
+  .ctrl-btn.main {
+    width: 64px; height: 64px;
+    background: var(--sage);
+    font-size: 24px;
+    box-shadow: 0 8px 24px rgba(107,158,120,0.4);
+  }
+
+  /* S9 — JOURNAL */
+  .s-journal {
+    background: var(--cream);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .journal-header {
+    background: linear-gradient(135deg, #F5EDD0, #EDE3C5);
+    padding: 40px 20px 20px;
+    border-radius: 0 0 24px 24px;
+  }
+
+  .journal-month { font-size: 11px; color: #8B7A50; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+  .journal-title { font-size: 26px; font-weight: 700; color: #2D2010; margin-bottom: 16px; }
+
+  .journal-prompt-card {
+    background: white;
+    border-radius: 14px;
+    padding: 14px;
+    border-left: 3px solid var(--gold);
+  }
+
+  .jpc-label { font-size: 10px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
+  .jpc-prompt { font-size: 13px; color: #2D2010; font-family: 'Literata', serif; font-style: italic; }
+
+  .journal-body { padding: 16px; flex: 1; }
+
+  .journal-entry-item {
+    background: white;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 12px;
+    border: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .jei-date {
+    width: 36px;
+    text-align: center;
+  }
+
+  .jei-day { font-size: 20px; font-weight: 700; color: var(--night); line-height: 1; }
+  .jei-mon { font-size: 10px; color: var(--mist); text-transform: uppercase; }
+
+  .jei-content { flex: 1; }
+  .jei-title { font-size: 13px; font-weight: 600; color: var(--night); margin-bottom: 3px; }
+  .jei-preview { font-size: 11px; color: var(--mist); font-family: 'Literata', serif; font-style: italic; }
+  .jei-mood { font-size: 16px; margin-left: auto; }
+
+  /* S10 — PROGRESS */
+  .s-progress {
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .prog-header {
+    padding: 40px 20px 20px;
+    background: var(--night);
+  }
+
+  .prog-title { font-size: 22px; font-weight: 700; color: white; margin-bottom: 4px; }
+  .prog-sub { font-size: 12px; color: rgba(255,255,255,0.4); }
+
+  .score-ring-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 20px 0 8px;
+  }
+
+  .score-ring {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: conic-gradient(var(--sage) 0% 72%, rgba(255,255,255,0.08) 72% 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .score-ring::before {
+    content: '';
+    position: absolute;
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: var(--night);
+  }
+
+  .score-num { font-size: 20px; font-weight: 800; color: white; position: relative; z-index: 1; }
+
+  .score-details { color: rgba(255,255,255,0.7); }
+  .score-label { font-size: 11px; color: var(--sage-2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .score-val { font-size: 28px; font-weight: 800; color: white; }
+  .score-change { font-size: 12px; color: var(--sage); }
+
+  .prog-body { padding: 16px; }
+
+  .mood-chart {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .chart-title { font-size: 13px; font-weight: 600; color: var(--night); margin-bottom: 12px; }
+
+  .chart-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 60px;
+  }
+
+  .chart-bar-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    height: 100%;
+    justify-content: flex-end;
+  }
+
+  .chart-bar {
+    width: 100%;
+    border-radius: 4px 4px 0 0;
+    background: var(--sage-pale);
+    transition: height 0.3s;
+  }
+
+  .chart-bar.highlight { background: var(--sage); }
+  .chart-bar-label { font-size: 9px; color: var(--mist); }
+
+  .badge-row {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    border: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .badges-grid {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .badge-item {
+    width: 52px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .badge-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    background: var(--sage-pale);
+    border: 2px solid transparent;
+  }
+
+  .badge-icon.locked { background: var(--cream); filter: grayscale(1); opacity: 0.5; }
+  .badge-icon.earned { border-color: var(--gold); }
+  .badge-lbl { font-size: 9px; color: var(--mist); text-align: center; }
+
+  /* S11 — PROFILE / SETTINGS */
+  .s-profile {
+    background: var(--cream);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .profile-hero {
+    background: linear-gradient(160deg, var(--night), var(--slate));
+    padding: 40px 20px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-radius: 0 0 24px 24px;
+  }
+
+  .avatar {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--sage), #3D7A4E);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    border: 3px solid rgba(255,255,255,0.15);
+  }
+
+  .profile-info { flex: 1; }
+  .profile-name { font-size: 18px; font-weight: 700; color: white; }
+  .profile-tier {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(200,169,74,0.2);
+    border: 1px solid rgba(200,169,74,0.3);
+    color: var(--gold);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-top: 4px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .profile-body { padding: 16px; }
+
+  .settings-section { margin-bottom: 16px; }
+  .settings-label { font-size: 10px; font-weight: 700; color: var(--mist); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+
+  .settings-item {
+    background: white;
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 2px;
+    border: 1px solid rgba(0,0,0,0.04);
+  }
+
+  .si-icon { font-size: 18px; width: 28px; text-align: center; }
+  .si-label { font-size: 14px; color: var(--night); flex: 1; }
+  .si-value { font-size: 12px; color: var(--mist); }
+  .si-arrow { font-size: 14px; color: var(--mist); margin-left: 4px; }
+
+  .upgrade-cta {
+    background: linear-gradient(135deg, var(--night), var(--slate));
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .upgrade-icon { font-size: 28px; }
+  .upgrade-text { flex: 1; }
+  .upgrade-title { font-size: 14px; font-weight: 700; color: white; }
+  .upgrade-sub { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+  .upgrade-btn {
+    background: var(--gold);
+    color: var(--night);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 7px 12px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+
+  /* S12 — PAYWALL */
+  .s-paywall {
+    background: var(--night);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 20px 28px;
+  }
+
+  .paywall-close { align-self: flex-end; font-size: 20px; color: rgba(255,255,255,0.3); margin-bottom: 16px; cursor: pointer; }
+
+  .paywall-badge {
+    background: rgba(200,169,74,0.1);
+    border: 1px solid rgba(200,169,74,0.3);
+    color: var(--gold);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 16px;
+  }
+
+  .paywall-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: white;
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .paywall-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+    margin-bottom: 24px;
+    font-family: 'Literata', serif;
+    font-style: italic;
+  }
+
+  .plan-cards-wrap {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .plan-card {
+    border-radius: 16px;
+    padding: 16px;
+    border: 2px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .plan-card.selected {
+    border-color: var(--sage);
+    background: rgba(107,158,120,0.08);
+  }
+
+  .plan-card.popular::after {
+    content: 'BEST VALUE';
+    position: absolute;
+    top: -10px; right: 12px;
+    background: var(--sage);
+    color: white;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    border-radius: 100px;
+  }
+
+  .plan-radio {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .plan-radio.checked { border-color: var(--sage); background: var(--sage); }
+  .plan-radio.checked::after { content: '✓'; font-size: 10px; color: white; font-weight: 700; }
+
+  .plan-info { flex: 1; }
+  .plan-name { font-size: 14px; font-weight: 700; color: white; }
+  .plan-period { font-size: 11px; color: rgba(255,255,255,0.4); }
+  .plan-price { text-align: right; }
+  .plan-amount { font-size: 20px; font-weight: 800; color: white; }
+  .plan-per { font-size: 10px; color: rgba(255,255,255,0.4); }
+  .plan-save { font-size: 10px; color: var(--sage); font-weight: 600; }
+
+  .paywall-features {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .pf-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .pf-check { color: var(--sage); font-size: 14px; }
+
+  .paywall-cta {
+    width: 100%;
+    padding: 16px;
+    background: var(--sage);
+    border-radius: 16px;
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+    text-align: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(107,158,120,0.3);
+  }
+
+  .paywall-restore { font-size: 11px; color: rgba(255,255,255,0.3); text-align: center; }
+
+  /* FLOW ARROWS */
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 20px 48px;
+    font-size: 12px;
+    color: var(--mist);
+    font-weight: 500;
+  }
+
+  .flow-arrow::before, .flow-arrow::after {
+    content: '';
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+    flex: 1;
+  }
+
+  /* ── RESPONSIVE ─────────────── */
+  @media (max-width: 600px) {
+    .flow-section { padding: 40px 16px; }
+    .flow-nav { padding: 12px 16px; }
+    .page-header { padding: 40px 20px 28px; }
+    .flow-arrow { padding: 16px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="ph-label">// Serene Android App · Screen Flow v1.0</div>
+  <div class="ph-title">UX <em>Wireframes</em></div>
+  <p class="ph-sub">12 key screens · Complete user journey from splash to subscription · Scroll horizontally inside each flow to see all screens</p>
+</div>
+
+<!-- FLOW NAV -->
+<nav class="flow-nav">
+  <a href="#flow-auth">Auth Flow</a>
+  <a href="#flow-onboard">Onboarding</a>
+  <a href="#flow-home">Home</a>
+  <a href="#flow-mood">Mood Log</a>
+  <a href="#flow-aura">Aura Chat</a>
+  <a href="#flow-session">Sessions</a>
+  <a href="#flow-journal">Journal</a>
+  <a href="#flow-progress">Progress</a>
+  <a href="#flow-profile">Profile</a>
+  <a href="#flow-paywall">Paywall</a>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     FLOW 1: AUTH
+═══════════════════════════════════════════ -->
+<div class="flow-section" id="flow-auth">
+  <div class="flow-section-header">
+    <div class="flow-num">Flow 01 · First Launch</div>
+    <div class="flow-title">Splash → Sign Up</div>
+    <div class="flow-desc">User opens the app for the first time. Sees the brand, then chooses to sign up or continue anonymously.</div>
+  </div>
+
+  <div class="screens-row">
+
+    <!-- SPLASH -->
+    <div class="phone-wrap">
+      <div class="screen-label">S01 · Splash</div>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ◼ 🔋</div></div>
+        <div class="screen-content">
+          <div class="s-splash">
+            <div class="splash-orb"></div>
+            <div class="splash-name">Serene</div>
+            <div class="splash-tagline">Your mind deserves care</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-sublabel">Auto-advances after 2s<br>Animated orb with breathing pulse</div>
+    </div>
+
+    <!-- SIGN UP -->
+    <div class="phone-wrap">
+      <div class="screen-label">S02 · Sign Up</div>
+      <div class="phone">
+        <div class="status-bar dark"><span>9:41</span><div class="status-icons">▲ ◼ 🔋</div></div>
+        <div class="screen-content">
+          <div class="s-signup">
+            <div class="signup-back">←</div>
+            <div class="signup-title">Create your space</div>
+            <div class="signup-sub">A safe, private place just for you.</div>
+
+            <div class="input-group">
+              <div class="input-label">Your name</div>
+              <div class="input-field">Namrata</div>
+            </div>
+            <div class="input-group">
+              <div class="input-label">Email</div>
+              <div class="input-field focused">namrata@gmail.com</div>
+            </div>
+            <div class="input-group">
+              <div class="input-label">Password</div>
+              <div class="input-field">••••••••</div>
+            </div>
+
+            <div class="divider-or">or continue with</div>
+
+            <div class="btn-google">
+              <div class="google-g">G</div>
+              Continue with Google
+            </div>
+
+            <div style="flex:1"></div>
+            <div class="btn-primary" style="margin-top:20px;">Create Account →</div>
+            <div class="btn-secondary">Continue anonymously</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-sublabel">Google Sign-in for frictionless entry<br>Anonymous option reduces barrier</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FLOW 2: ONBOARDING QUIZ
+═══════════════════════════════════════════ -->
+<div class="flow-section" id="flow-onboard">
+  <div class="flow-section-header">
+    <div class="flow-num">Flow 02 · Onboarding (one-time)</div>
+    <div class="flow-title">Persona Selection → Goal Setting</div>
+    <div class="flow-desc">3-step quiz to personalise the app. Stores data in profiles + persona extension tables. Skip allowed.</div>
+  </div>
+
+  <div class="screens-row">
+
+    <!-- ONBOARD 1: PERSONA -->
+    <div class="phone-wrap">
+      <div class="screen-label">S03 · Who are you?</div>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ◼ 🔋</div></div>
+        <div class="screen-content">
+          <div class="s-quiz" style="padding-top:36px;">
+            <div style="display:flex;gap:4px;margin-bottom:24px;">
+              <div style="height:3px;flex:1;border-radius:2px;background:var(--sage);"></div>
+              <div style="height:3px;flex:1;border-radius:2px;background:rgba(255,255,255,0.1);"></div>
+              <div style="height:3px;flex:1;border-radius:2px;background:rgba(255,255,255,0.1);"></div>
+            </div>
+            <div class="quiz-step">Step 1 of 3</div>
+            <div class="quiz-q">Which best describes you right now?</div>
+            <div class="quiz-sub">We'll personalise your experience</div>
+
+            <div class="persona-options">
+              <div class="persona-opt selected">
+                <div class="persona-opt-icon">🧒</div>
+                <div>
+                  <div class="persona-opt-label">I'm a Teenager</div>
+                  <div class="persona-opt-desc">13–19 · Social life, identity, stress</div>
+                </div>
+              </div>
+              <div class="persona-opt">
+                <div class="persona-opt-icon">📚</div>
+                <div>
+                  <div class="persona-opt-label">Exam Warrior</div>
+                  <div class="persona-opt-desc">JEE · NEET · CUET · Boards</div>
+                </div>
+              </div>
+              <div class="persona-opt">
+                <div class="persona-opt-icon">👩</div>
+                <div>
+                  <div class="persona-opt-label">Working Woman</div>
+                  <div class="persona-opt-desc">Balancing home, career & self</div>
+                </div>
+              </div>
+              <div class="persona-opt">
+                <div class="persona-opt-icon">👨‍👩‍👧</div>
+                <div>
+                  <div class="persona-opt-label">Parent of a Teenager</div>
+                  <div class="persona-opt-desc">Understanding & supporting your teen</div>
+                </div>
+              </div>
+              <div class="persona-opt">
+                <div class="persona-opt-icon">💼</div>
+                <div>
+                  <div class="persona-opt-label">Corporate Professional</div>
+                  <div class="persona-opt-desc">Burnout, deadlines, work-life balance</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="btn-primary" style="margin-top:16px;">Next →</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-sublabel">Saves to: profiles.primary_persona<br>Progress bar shows 3 steps</div>
+    </div>
+
+    <!-- ONBOARD 2: STRESSORS -->
+    <div class="phone-wrap">
+      <div class="screen-label">S04 · What stresses you?</div>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ◼ 🔋</div></div>
+        <div class="screen-content">
+          <div class="s-quiz" style="padding-top:36px;">
+            <div style="display:flex;gap:4px;margin-bottom:24px;">
+              <div style="height:3px;flex:1;border-radius:2px;background:var(--sage);"></div>
+              <div style="height:3px;flex:1;border-radius:2px;background:var(--sage);"></div>
+              <div style="height:3px;flex:1;border-radius:2px;background:rgba(255,255,255,0.1);"></div>
+            </div>
+            <div class="quiz-step">Step 2 of 3</div>
+            <div class="quiz-q">What's weighing on you most?</div>
+            <div class="quiz-sub">Pick all that apply</div>
+
+            <div class="tag-chips" style="margin-top:8px;">
+              <div class="tag-chip selected" style="border-color:var(--sage);background:rgba(107,158,120,0.15);color:var(--sage-2);">😰 Exam pressure</div>
+              <div class="tag-chip selected" style="border-color:var(--sage);background:rgba(107,158,120,0.15);color:var(--sage-2);">😴 Sleep issues</div>
+              <div class="tag-chip" style="color:rgba(255,255,255,0.6);border-color:rgba(255,255,255,0.12);">💭 Overthinking</div>
+              <div class="tag-chip" style="color:rgba(255,255,255,0.6);border-color:rgba(255,255,255,0.12);">👨‍👩‍👧 Family tension</div>
+              <div class="tag-chip" style="color:rgba(255,255,255,0.6);border-color:rgba(255,255,255,0.12);">📱 Screen addiction</div>
+              <div class="tag-chip" style="color:rgba(255,255,255,0.6);border-color:rgba(255,255,255,0.12);">🤝 Loneliness</div>
+              <div class="tag-chip" style="color:rgba(255,255,255,0.6);border-color:rgba(255,255,255,0.12);">😤 Anger control</div>
+              <div class="tag-chip" style="color:rgba(255,255,255,0.6);border-color:rgba(255,255,255,0.12);">🎯 Lack of focus</div>
+            </div>
+
+            <div style="flex:1"></div>
+            <div class="btn-primary">Next →</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-sublabel">Multi-select tags<br>Saves to: profiles.primary_stressors[]</div>
+    </div>
+
+    <!-- ONBOARD 3: GOAL -->
+    <div class="phone-wrap">
+      <div class="screen-label">S05 · Your goals</div>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ◼ 🔋</div></div>
+        <div class="screen-content">
+          <div class="s-quiz" style="padding-top:36px;">
+            <div style="display:flex;gap:4px;margin-bottom:24px;">
+              <div style="height:3px;flex:1;border-radius:2px;background:var(--sage);"></div>
+              <div style="height:3px;flex:1;border-radius:2px;background:var(--sage);"></div>
+              <div style="height:3px;flex:1;border-radius:2px;background:var(--sage);"></div>
+            </div>
+            <div class="quiz-step">Step 3 of 3 · Almost there ✨</div>
+            <div class="quiz-q">What do you want to feel?</div>
+            <div class="quiz-sub">Your goal guides your journey</div>
+
+            <div class="persona-options" style="margin-top:8px;">
+              <div class="persona-opt selected">
+                <div class="persona-opt-icon">🎯</div>
+                <div>
+                  <div class="persona-opt-label">More focused & sharp</div>
+                  <div class="persona-opt-desc">Nail my exams and goals</div>
+                </div>
+              </div>
+              <div class="persona-opt">
+                <div class="persona-opt-icon">😌</div>
+                <div>
+                  <div class="persona-opt-label">Calmer & less anxious</div>
+                  <div class="persona-opt-desc">Less overthinking, more peace</div>
+                </div>
+              </div>
+              <div class="persona-opt">
+                <div class="persona-opt-icon">😴</div>
+                <div>
+                  <div class="persona-opt-label">Sleep better</div>
+                  <div class="persona-opt-desc">Wake up rested and refreshed</div>
+                </div>
+              </div>
+              <div class="persona-opt">
+                <div class="persona-opt-icon">💪</div>
+                <div>
+                  <div class="persona-opt-label">Build emotional resilience</div>
+                  <div class="persona-opt-desc">Handle pressure without breaking</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="btn-primary" style="margin-top:16px;background:var(--sage);">Start My Journey 🌿</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-sublabel">Saves to: profiles.goals[]<br>Triggers personalised home screen</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FLOW 3: HOME
+═══════════════════════════════════════════ -->
+<div class="flow-section" id="flow-home">
+  <div class="flow-section-header">
+    <div class="flow-num">Flow 03 · Daily Hub</div>
+    <div class="flow-title">Home Screen</div>
+    <div class="flow-desc">The central screen users return to daily. Morning check-in, streak, recommended sessions, Aura banner, tab bar.</div>
+  </div>
+
+  <div class="screens-row">
+    <div class="phone-wrap">
+      <div class="screen-label">S06 · Home (Morning)</div>
+      <div class="phone">
+        <div class="status-bar"><span>7:30 AM</span><div class="status-icons">▲ ◼ 🔋</div></div>
+        <div class="screen-content">
+          <div class="s-home">
+            <div class="home-header">
+              <div class="home-greeting">Good morning ☀️</div>
+              <div class="home-name">Namrata</div>
+              <div class="mood-checkin-card">
+                <div class="mood-q">How are you feeling right now?</div>
+                <div class="mood-faces">
+                  <div class="mood-face">
+                    <div class="mood-face-icon">😞</div>
+                    <div class="mood-face-lbl">Very Low</div>
+                  </div>
+                  <div class="mood-face">
+                    <div class="mood-face-icon">😕</div>
+                    <div class="mood-face-lbl">Low</div>
+                  </div>
+                  <div class="mood-face active">
+                    <div class="mood-face-icon">😐</div>
+                    <div class="mood-face-lbl">Neutral</div>
+                  </div>
+                  <div class="mood-face">
+                    <div class="mood-face-icon">😊</div>
+                    <div class="mood-face-lbl">Good</div>
+                  </div>
+                  <div class="mood-face">
+                    <div class="mood-face-icon">😄</div>
+                    <div class="mood-face-lbl">Great</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="home-body" style="padding-bottom:80px;">
+              <div class="streak-bar">
+                <div class="streak-flame">🔥</div>
+                <div>
+                  <div class="streak-num">7</div>
+                  <div class="streak-lbl">Day streak · Keep it going!</div>
+                </div>
+                <div style="margin-left:auto;font-size:12px;color:var(--sage);font-weight:600;">+10 pts</div>
+              </div>
+
+              <div class="section-head">
+                <div class="sec-label">For You Today</div>
+                <div class="sec-all">See all</div>
+              </div>
+
+              <div class="session-cards">
+                <div class="session-card">
+                  <div class="sc-icon">🧘</div>
+                  <div class="sc-title">Box Breathing</div>
+                  <div class="sc-dur">4 min</div>
+                  <div class="sc-badge free">FREE</div>
+                </div>
+                <div class="session-card">
+                  <div class="sc-icon">📓</div>
+                  <div class="sc-title">Morning Journal</div>
+                  <div class="sc-dur">5 min</div>
+                  <div class="sc-badge free">FREE</div>
+                </div>
+                <div class="session-card">
+                  <div class="sc-icon">🎯</div>
+                  <div class="sc-title">Exam Focus Ritual</div>
+                  <div class="sc-dur">8 min</div>
+                  <div class="sc-badge premium">PLUS</div>
+                </div>
+                <div class="session-card">
+                  <div class="sc-icon">🌙</div>
+                  <div class="sc-title">Sleep Story</div>
+                  <div class="sc-dur">20 min</div>
+                  <div class="sc-badge premium">PLUS</div>
+                </div>
+              </div>
+
+              <div class="section-head">
+                <div class="sec-label">Talk to Aura</div>
+              </div>
+              <div class="aura-banner">
+                <div class="aura-orb-small"></div>
+                <div class="aura-banner-text">
+                  <div class="aura-banner-name">Aura · AI Companion</div>
+                  <div class="aura-banner-sub">How are you coping with exams?</div>
+                </div>
+                <div class="aura-banner-arrow">›</div>
+              </div>
+            </div>
+
+            <!-- TAB BAR -->
+            <div class="tab-bar">
+              <div class="tab-item active">
+                <div class="tab-icon">🏠</div>
+                <div>Home</div>
+                <div class="tab-dot"></div>
+              </div>
+              <div class="tab-item">
+                <div class="tab-icon">🧘</div>
+                <div>Sessions</div>
+              </div>
+              <div class="tab-item">
+                <div class="tab-icon">📓</div>
+                <div>Journal</div>
+              </div>
+              <div class="tab-item">
+                <div class="tab-icon">📊</div>
+                <div>Progress</div>
+              </div>
+              <div class="tab-item">
+                <div class="tab-icon">👤</div>
+                <div>Profile</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-sublabel">Reads from: mood_logs, session_logs,<br>profiles.streak_current, content_library</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FLOW 4: MOOD DETAIL
+═══════════════════════════════════════════ -->
+<div class="flow-section" id="flow-mood">
+  <div class="flow-section-header">
+    <div class="flow-num">Flow 04 · Mood Logging</div>
+    <div class="flow-title">Mood Detail Screen</div>
+    <div class="flow-desc">After tapping a mood face on Home, this expands to add emotions, triggers, and a note. Writes to mood_logs table. AI generates an insight.</div>
+  </div>
+
+  <div class="screens-row">
+    <div class="phone-wrap">
+      <div class="screen-label">S07 · Mood Detail</div>
+      <div class="phone">
+        <div class="status-bar dark"><span>9:41</span><div class="status-icons">▲ ◼ 🔋</div></div>
+        <div class="screen-content">
+          <div class="s-mood">
+            <div class="modal-header">
+              <div class="modal-back">←</div>
+              <div class="modal-title">How you're feeling</div>
+            </div>
+            <div class="mood-body">
+              <div class="mood-selected">
+                <div class="mood-big-emoji">😐</div>
+                <div class="mood-big-label">Neutral</div>
+              </div>
+
+              <div class="tag-select-title">What emotions are present?</div>
+              <div class="tag-chips">
+                <div class="tag-chip selected">😰 Anxious</div>
+                <div class="tag-chip selected">😴 Tired</div>
+                <div class="tag-chip">🤔 Confused</div>
+                <div class="tag-chip">😤 Frustrated</div>
+                <div class="tag-chip">🫤 Numb</div>
+                <div class="tag-chip">😟 Worried</div>
+                <div class="tag-chip">😮‍💨 Overwhelmed</div>
+              </div>
+
+              <div class="tag-select-title">What triggered this?</div>
+              <div class="tag-chips">
+                <div class="tag-chip selected">📝 Exam tomorrow</div>
+                <div class="tag-chip">😴 Didn't sleep well</div>
+                <div class="tag-chip">👨‍👩‍👧 Family</div>
+                <div class="tag-chip">📱 Too much phone</div>
+                <div class="tag-chip">😔 Loneliness</div>
+              </div>
+
+              <div class="tag-select-title">Add a note (optional)</div>
+              <div class="textarea-wrap">
+                <div class="textarea-placeholder">What's on your mind? This is your safe space...</div>
+              </div>
+
+              <div class="btn-primary" style="background:var(--night);">Save & Get Insight ✨</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-sublabel">Writes to: mood_logs<br>Triggers Claude API for ai_insight</div>
+    </div>
+
+    <div class="phone-wrap">
+      <div class="screen-label">S08 · AI Insight</div>
+      <div class="phone">
+        <div class="status-bar dark"><span>9:41</span><div class="status-icons">▲ ◼ 🔋</div></div>
+        <div class="screen-content">
+          <div class="s-mood">
+            <div class="modal-header">
+              <div class="modal-back">←</div>
+              <div class="modal-title">Aura's insight for you</div>
+            </div>
+            <div class="mood-body" style="display:flex;flex-direction:column;">
+              <div class="mood-selected" style="padding:16px 0 20px;">
+                <div class="mood-big-emoji">😐</div>
+                <div class="mood-big-label">Neutral · Exam anxiety</div>
+              </div>
+
+              <div style="background:var(--sage-pale);border-radius:16px;padding:16px;border-left:3px solid var(--sage);margin-bottom:16px;">
+                <div style="font-size:10px;font-weight:700;color:var(--sage);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;">🤖 Aura's Note</div>
+                <div style="font-size:13px;color:var(--night);font-family:'Literata',serif;line-height:1.7;font-style:italic;">"It's completely natural to feel anxious the night before an exam. Your brain is actually doing its job — it cares about this. Try the Box Breathing exercise below; it can quiet that nervous system in under 4 minutes."</div>
+              </div>
+
+              <div style="font-size:12px;font-weight:600;color:var(--slate);margin-bottom:10px;">Recommended for you now:</div>
+
+              <div style="background:white;border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:10px;border:1px solid rgba(0,0,0,0.05);">
+                <div style="font-size:28px;">🧘</div>
+                <div>
+                  <div style="font-size:13px;font-weight:600;color:var(--night);">Box Breathing · 4 min</div>
+                  <div style="font-size:11px;color:var(--mist);">Calms the nervous system instantly</div>
+                </div>
+                <div style="margin-left:auto;font-size:13px;color:var(--sage);font-weight:600;">Start →</div>
+              </div>
+
+              <div style="background:white;border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px;border:1px solid rgba(0,0,0,0.05);">
+                <div style="font-size:28px;">📓</div>
+                <div>
+                  <div style="font-size:13px;font-weight:600;color:var(--night);">Pre-exam Journal Prompt</div>
+                  <div style="font-size:11px;color:var(--mist);">Dump the worry, clear your mind</div>
+                </div>
+                <div style="margin-left:auto;font-size:13px;color:var(--sage);font-weight:600;">Write →</div>
+              </div>
+
+              <div style="flex:1"></div>
+              <div style="font-size:12px;color:var(--mist);text-align:center;padding:16px 0;font-family:'Literata',serif;font-style:italic;">Streak extended 🔥 · +5 points earned</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-sublabel">Shows AI insight from Claude API<br>Recommends relevant sessions</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FLOW 5: AURA CHAT
+═══════════════════════════════════════════ -->
+<div class="flow-section" id="flow-aura">
+  <div class="flow-section-header">
+    <div class="flow-num">Flow 05 · AI Companion</div>
+    <div class="flow-title">Aura — The Chat Interface</div>
+    <div class="flow-desc">Aura is CBT/DBT-trained AI. Shows technique tags, crisis banner when needed. Free = 5 msgs/day. Plus = unlimited.</div>
+  </div>
+
+  <div class="screens-row">
+    <div class="phone-wrap">
+      <div class="screen-label">S09 · Aura Chat</div>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ◼ 🔋</div></div>
+        <div class="screen-content">
+          <div class="s-aura">
+            <div class="aura-header">
+              <div class="aura-header-back">←</div>
+              <div class="aura-orb-med"></div>
+              <div>
+                <div class="aura-header-name">Aura</div>
+                <div class="aura-status">Online · Always here</div>
+              </div>
+              <div style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.3);">Free · 3/5 msgs</div>
+            </div>
+
+            <div class="chat-messages">
+              <div class="msg aura">
+                <div class="technique-tag">🌿 VALIDATION</div>
+                Hi Namrata 🌿 I'm Aura, your calm space. How are you feeling today? You can share anything — there's no judgment here.
+              </div>
+
+              <div class="msg user">
+                I'm so stressed about my JEE exam next week. I feel like I'm going to fail and disappoint everyone.
+              </div>
+
+              <div class="msg aura">
+                <div class="technique-tag">🧠 CBT · COGNITIVE RESTRUCTURING</div>
+                That weight you're carrying sounds really heavy. Let's look at that thought together — "I'm going to fail and disappoint everyone." Can you tell me: what's the evidence for this thought? And what evidence might contradict it?
+              </div>
+
+              <div class="msg user">
+                I've been studying 10 hours a day... I guess I do know the material.
+              </div>
+
+              <div class="msg aura">
+                <div class="technique-tag">🌱 POSITIVE REFRAME</div>
+                Exactly. Ten hours every day — that's not someone who's going to fail, that's someone who cares deeply and has prepared. The anxiety is coming from that same care. It's not a sign of weakness — it's a sign you're invested. 💚
+              </div>
+            </div>
+
+            <div class="crisis-bar" style="display:none;"></div>
+
+            <div style="padding:0 16px;margin-bottom:8px;">
+              <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;">
+                <div style="flex-shrink:0;background:rgba(107,158,120,0.1);border:1px solid rgba(107,158,120,0.2);border-radius:100px;padding:6px 12px;font-size:11px;color:var(--sage-2);">I can't sleep</div>
+                <div style="flex-shrink:0;background:rgba(107,158,120,0.1);border:1px solid rgba(107,158,120,0.2);border-radius:100px;padding:6px 12px;font-size:11px;color:var(--sage-2);">Breathing exercise</div>
+                <div style="flex-shrink:0;background:rgba(107,158,120,0.1);border:1px solid rgba(107,158,120,0.2);border-radius:100px;padding:6px 12px;font-size:11px;color:var(--sage-2);">I feel hopeless</div>
+              </div>
+            </div>
+
+            <div class="chat-input-wrap">
+              <div class="chat-input">Tell Aura how you're feeling...</div>
+              <div class="chat-send">↑</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-sublabel">Reads: aura_conversations, aura_messages<br>Checks: aura_daily_usage for free limit</div>
+    </div>
+
+    <div class="phone-wrap">
+      <div class="screen-label">S10 · Crisis Detection</div>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ◼ 🔋</div></div>
+        <div class="screen-content">
+          <div class="s-aura">
+            <div class="aura-header">
+              <div class="aura-header-back">←</div>
+              <div class="aura-orb-med"></div>
+              <div>
+                <div class="aura-header-name">Aura</div>
+                <div class="aura-status">Online · Always here</div>
+              </div>
+            </div>
+
+            <div class="chat-messages">
+              <div class="msg user">
+                I don't see the point anymore. I've tried so hard and nothing works. I just want it all to stop.
+              </div>
+
+              <div class="msg aura">
+                <div class="technique-tag">❤️ SAFETY FIRST</div>
+                What you just shared matters deeply to me, and I want you to know I'm here with you right now. When you say you want it all to stop — can you help me understand what you mean? Are you having thoughts of hurting yourself?
+              </div>
+            </div>
+
+            <div class="crisis-bar">
+              <div class="crisis-bar-icon">🆘</div>
+              <div class="crisis-bar-text">You're not alone. iCall Helpline: 9152987821</div>
+              <div class="crisis-bar-btn">Call Now →</div>
+            </div>
+
+            <div style="padding:12px 16px;background:rgba(196,114,74,0.06);border-top:1px solid rgba(196,114,74,0.15);">
+              <div style="font-size:12px;color:var(--terra-light);margin-bottom:8px;font-weight:600;">You are not alone in this. 💛</div>
+              <div style="display:flex;gap:8px;">
+                <div style="flex:1;background:rgba(196,114,74,0.15);border-radius:10px;padding:10px;text-align:center;">
+                  <div style="font-size:18px;margin-bottom:2px;">📞</div>
+                  <div style="font-size:10px;color:var(--terra-light);font-weight:600;">iCall<br>Helpline</div>
+                </div>
+                <div style="flex:1;background:rgba(196,114,74,0.15);border-radius:10px;padding:10px;text-align:center;">
+                  <div style="font-size:18px;margin-bottom:2px;">🧑‍⚕️</div>
+                  <div style="font-size:10px;color:var(--terra-light);font-weight:600;">Talk to a<br>Therapist</div>
+                </div>
+                <div style="flex:1;background:rgba(196,114,74,0.15);border-radius:10px;padding:10px;text-align:center;">
+                  <div style="font-size:18px;margin-bottom:2px;">🫂</div>
+                  <div style="font-size:10px;color:var(--terra-light);font-weight:600;">Stay with<br>Aura</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="chat-input-wrap">
+              <div class="chat-input">I'm here with you...</div>
+              <div class="chat-send">↑</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-sublabel">Writes to: crisis_events table<br>iCall India helpline shown immediately</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FLOW 6: SESSION PLAYER
+═══════════════════════════════════════════ -->
+<div class="flow-section" id="flow-session">
+  <div class="flow-section-header">
+    <div class="flow-num">Flow 06 · Sessions</div>
+    <div class="flow-title">Session Player</div>
+    <div class="flow-desc">Guided meditations, breathing, CBT exercises. Animated visual, timer, progress bar. Mood before/after captured.</div>
+  </div>
+
+  <div class="screens-row">
+    <div class="phone-wrap">
+      <div class="screen-label">S11 · Session Player</div>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ◼ 🔋</div></div>
+        <div class="screen-content">
+          <div class="s-session">
+            <div class="session-header">
+              <div class="sess-back">✕</div>
+              <div class="sess-title">Box Breathing</div>
+              <div class="sess-fav">♡</div>
+            </div>
+
+            <div class="session-visual">
+              <div class="breathing-circle">INHALE</div>
+              <div class="session-instruction">Breathe in slowly<br>through your nose...</div>
+              <div style="display:flex;gap:24px;align-items:center;">
+                <div style="text-align:center;">
+                  <div style="font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;">Cycle</div>
+                  <div style="font-size:20px;font-weight:700;color:white;">2 / 4</div>
+                </div>
+                <div class="session-timer">0:47</div>
+                <div style="text-align:center;">
+                  <div style="font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;">Left</div>
+                  <div style="font-size:20px;font-weight:700;color:white;">3:13</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="session-controls">
+              <div class="progress-track">
+                <div class="progress-fill"></div>
+              </div>
+              <div class="controls-row">
+                <div class="ctrl-btn">⏮</div>
+                <div class="ctrl-btn main">⏸</div>
+                <div class="ctrl-btn">⏭</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-sublabel">Reads: content_library.script_text[]<br>Writes: session_logs on complete</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FLOW 7: JOURNAL
+═══════════════════════════════════════════ -->
+<div class="flow-section" id="flow-journal">
+  <div class="flow-section-header">
+    <div class="flow-num">Flow 07 · Journal</div>
+    <div class="flow-title">Journal List + Entry</div>
+    <div class="flow-desc">Private encrypted journal with AI prompt of the day. Shows past entries with mood indicator. AI analyses each entry.</div>
+  </div>
+
+  <div class="screens-row">
+    <div class="phone-wrap">
+      <div class="screen-label">S12 · Journal Home</div>
+      <div class="phone">
+        <div class="status-bar dark"><span>9:41</span><div class="status-icons">▲ ◼ 🔋</div></div>
+        <div class="screen-content">
+          <div class="s-journal">
+            <div class="journal-header">
+              <div class="journal-month">MAY 2026</div>
+              <div class="journal-title">Your Journal</div>
+              <div class="journal-prompt-card">
+                <div class="jpc-label">✨ Today's prompt</div>
+                <div class="jpc-prompt">"What is one small thing that went right today, even on a hard day?"</div>
+              </div>
+            </div>
+
+            <div class="journal-body" style="padding-bottom:80px;">
+              <div class="section-head" style="margin-top:4px;">
+                <div class="sec-label" style="font-size:13px;">Recent entries</div>
+                <div style="width:36px;height:36px;border-radius:12px;background:var(--night);display:flex;align-items:center;justify-content:center;font-size:18px;color:white;">✏️</div>
+              </div>
+
+              <div class="journal-entry-item">
+                <div class="jei-date"><div class="jei-day">31</div><div class="jei-mon">MAY</div></div>
+                <div class="jei-content">
+                  <div class="jei-title">Pre-exam nerves</div>
+                  <div class="jei-preview">I can't stop thinking about tomorrow. But Aura helped me see...</div>
+                </div>
+                <div class="jei-mood">😐</div>
+              </div>
+
+              <div class="journal-entry-item">
+                <div class="jei-date"><div class="jei-day">30</div><div class="jei-mon">MAY</div></div>
+                <div class="jei-content">
+                  <div class="jei-title">Gratitude practice</div>
+                  <div class="jei-preview">Three things I'm grateful for today: Amma's food, my study group...</div>
+                </div>
+                <div class="jei-mood">😊</div>
+              </div>
+
+              <div class="journal-entry-item">
+                <div class="jei-date"><div class="jei-day">28</div><div class="jei-mon">MAY</div></div>
+                <div class="jei-content">
+                  <div class="jei-title">Feeling low</div>
+                  <div class="jei-preview">Everything feels heavy today. I wrote for 10 minutes and...</div>
+                </div>
+                <div class="jei-mood">😞</div>
+              </div>
+            </div>
+
+            <div class="tab-bar">
+              <div class="tab-item"><div class="tab-icon">🏠</div><div>Home</div></div>
+              <div class="tab-item"><div class="tab-icon">🧘</div><div>Sessions</div></div>
+              <div class="tab-item active"><div class="tab-icon">📓</div><div>Journal</div><div class="tab-dot"></div></div>
+              <div class="tab-item"><div class="tab-icon">📊</div><div>Progress</div></div>
+              <div class="tab-item"><div class="tab-icon">👤</div><div>Profile</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-sublabel">Reads: journal_entries ordered by date<br>Shows mood emoji from mood_before</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FLOW 8: PROGRESS
+═══════════════════════════════════════════ -->
+<div class="flow-section" id="flow-progress">
+  <div class="flow-section-header">
+    <div class="flow-num">Flow 08 · Analytics</div>
+    <div class="flow-title">Progress Dashboard</div>
+    <div class="flow-desc">Weekly mood chart, wellness score, badges earned. This screen drives retention — seeing improvement is addictive.</div>
+  </div>
+
+  <div class="screens-row">
+    <div class="phone-wrap">
+      <div class="screen-label">S13 · Progress</div>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ◼ 🔋</div></div>
+        <div class="screen-content">
+          <div class="s-progress">
+            <div class="prog-header">
+              <div class="prog-title">Your Progress</div>
+              <div class="prog-sub">Week of 25 – 31 May 2026</div>
+              <div class="score-ring-wrap">
+                <div class="score-ring"><div class="score-num">72</div></div>
+                <div class="score-details">
+                  <div class="score-label">Wellness Score</div>
+                  <div class="score-val">72 <span style="font-size:16px;color:var(--sage);">↑</span></div>
+                  <div class="score-change">+8 from last week 🎉</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="prog-body" style="padding-bottom:80px;">
+              <div class="mood-chart">
+                <div class="chart-title">Mood this week</div>
+                <div class="chart-bars">
+                  <div class="chart-bar-wrap"><div class="chart-bar" style="height:40%;"></div><div class="chart-bar-label">M</div></div>
+                  <div class="chart-bar-wrap"><div class="chart-bar" style="height:55%;"></div><div class="chart-bar-label">T</div></div>
+                  <div class="chart-bar-wrap"><div class="chart-bar highlight" style="height:75%;"></div><div class="chart-bar-label">W</div></div>
+                  <div class="chart-bar-wrap"><div class="chart-bar" style="height:60%;"></div><div class="chart-bar-label">T</div></div>
+                  <div class="chart-bar-wrap"><div class="chart-bar" style="height:45%;"></div><div class="chart-bar-label">F</div></div>
+                  <div class="chart-bar-wrap"><div class="chart-bar" style="height:70%;"></div><div class="chart-bar-label">S</div></div>
+                  <div class="chart-bar-wrap"><div class="chart-bar highlight" style="height:80%;"></div><div class="chart-bar-label">S</div></div>
+                </div>
+                <div style="margin-top:12px;font-size:11px;color:var(--mist);font-family:'Literata',serif;font-style:italic;">"Your best days were Wednesday and Sunday. Sleep was a strong predictor."</div>
+              </div>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+                <div style="background:white;border-radius:14px;padding:14px;border:1px solid rgba(0,0,0,0.05);">
+                  <div style="font-size:10px;color:var(--mist);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Sessions Done</div>
+                  <div style="font-size:26px;font-weight:800;color:var(--night);">14</div>
+                  <div style="font-size:11px;color:var(--sage);">↑ 6 more than last week</div>
+                </div>
+                <div style="background:white;border-radius:14px;padding:14px;border:1px solid rgba(0,0,0,0.05);">
+                  <div style="font-size:10px;color:var(--mist);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Journal Entries</div>
+                  <div style="font-size:26px;font-weight:800;color:var(--night);">5</div>
+                  <div style="font-size:11px;color:var(--sage);">Consistent 🌟</div>
+                </div>
+              </div>
+
+              <div class="badge-row">
+                <div class="chart-title">Your Badges</div>
+                <div class="badges-grid">
+                  <div class="badge-item"><div class="badge-icon earned">🌱</div><div class="badge-lbl">First Step</div></div>
+                  <div class="badge-item"><div class="badge-icon earned">🔥</div><div class="badge-lbl">7-Day Streak</div></div>
+                  <div class="badge-item"><div class="badge-icon earned">📓</div><div class="badge-lbl">Journaller</div></div>
+                  <div class="badge-item"><div class="badge-icon locked">🏆</div><div class="badge-lbl">30-Day</div></div>
+                  <div class="badge-item"><div class="badge-icon locked">💎</div><div class="badge-lbl">PHQ-9 Ace</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-bar">
+              <div class="tab-item"><div class="tab-icon">🏠</div><div>Home</div></div>
+              <div class="tab-item"><div class="tab-icon">🧘</div><div>Sessions</div></div>
+              <div class="tab-item"><div class="tab-icon">📓</div><div>Journal</div></div>
+              <div class="tab-item active"><div class="tab-icon">📊</div><div>Progress</div><div class="tab-dot"></div></div>
+              <div class="tab-item"><div class="tab-icon">👤</div><div>Profile</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-sublabel">Reads: mood_weekly_summary, session_logs<br>badges, assessments tables</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FLOW 9: PROFILE
+═══════════════════════════════════════════ -->
+<div class="flow-section" id="flow-profile">
+  <div class="flow-section-header">
+    <div class="flow-num">Flow 09 · Profile</div>
+    <div class="flow-title">Profile & Settings</div>
+    <div class="flow-desc">User settings, notification preferences, subscription status, language toggle. Upgrade CTA always visible.</div>
+  </div>
+
+  <div class="screens-row">
+    <div class="phone-wrap">
+      <div class="screen-label">S14 · Profile</div>
+      <div class="phone">
+        <div class="status-bar dark"><span>9:41</span><div class="status-icons">▲ ◼ 🔋</div></div>
+        <div class="screen-content">
+          <div class="s-profile">
+            <div class="profile-hero">
+              <div class="avatar">🌿</div>
+              <div class="profile-info">
+                <div class="profile-name">Namrata</div>
+                <div class="profile-tier">✦ FREE PLAN</div>
+              </div>
+              <div style="font-size:13px;color:rgba(255,255,255,0.3);">Edit ✏️</div>
+            </div>
+
+            <div class="profile-body" style="padding-bottom:80px;">
+              <div class="upgrade-cta">
+                <div class="upgrade-icon">✨</div>
+                <div class="upgrade-text">
+                  <div class="upgrade-title">Unlock Serene Plus</div>
+                  <div class="upgrade-sub">Unlimited Aura · All sessions · ₹299/mo</div>
+                </div>
+                <div class="upgrade-btn">Upgrade →</div>
+              </div>
+
+              <div class="settings-section">
+                <div class="settings-label">My Profile</div>
+                <div class="settings-item"><div class="si-icon">🎭</div><div class="si-label">My Persona</div><div class="si-value">Student</div><div class="si-arrow">›</div></div>
+                <div class="settings-item"><div class="si-icon">🎯</div><div class="si-label">My Goals</div><div class="si-value">Focus, Sleep</div><div class="si-arrow">›</div></div>
+                <div class="settings-item"><div class="si-icon">🌐</div><div class="si-label">Language</div><div class="si-value">English</div><div class="si-arrow">›</div></div>
+              </div>
+
+              <div class="settings-section">
+                <div class="settings-label">Reminders</div>
+                <div class="settings-item"><div class="si-icon">🌅</div><div class="si-label">Morning check-in</div><div class="si-value">7:30 AM</div><div style="width:36px;height:20px;background:var(--sage);border-radius:10px;margin-left:8px;"></div></div>
+                <div class="settings-item"><div class="si-icon">🌙</div><div class="si-label">Evening wind-down</div><div class="si-value">9:00 PM</div><div style="width:36px;height:20px;background:rgba(0,0,0,0.1);border-radius:10px;margin-left:8px;"></div></div>
+              </div>
+
+              <div class="settings-section">
+                <div class="settings-label">Account</div>
+                <div class="settings-item"><div class="si-icon">🔒</div><div class="si-label">Privacy & Data</div><div class="si-arrow">›</div></div>
+                <div class="settings-item"><div class="si-icon">💳</div><div class="si-label">Subscription</div><div class="si-value">Free</div><div class="si-arrow">›</div></div>
+                <div class="settings-item"><div class="si-icon">🆘</div><div class="si-label">Crisis Resources</div><div class="si-arrow">›</div></div>
+                <div class="settings-item"><div class="si-icon">🚪</div><div class="si-label" style="color:#C4724A;">Sign Out</div></div>
+              </div>
+            </div>
+
+            <div class="tab-bar">
+              <div class="tab-item"><div class="tab-icon">🏠</div><div>Home</div></div>
+              <div class="tab-item"><div class="tab-icon">🧘</div><div>Sessions</div></div>
+              <div class="tab-item"><div class="tab-icon">📓</div><div>Journal</div></div>
+              <div class="tab-item"><div class="tab-icon">📊</div><div>Progress</div></div>
+              <div class="tab-item active"><div class="tab-icon">👤</div><div>Profile</div><div class="tab-dot"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-sublabel">Reads: profiles, notification_preferences<br>Upgrade CTA → opens Paywall</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FLOW 10: PAYWALL
+═══════════════════════════════════════════ -->
+<div class="flow-section" id="flow-paywall">
+  <div class="flow-section-header">
+    <div class="flow-num">Flow 10 · Monetisation</div>
+    <div class="flow-title">Paywall Screen</div>
+    <div class="flow-desc">Triggered when a user hits a premium feature or clicks Upgrade. Annual plan pre-selected (best LTV). RevenueCat handles the purchase.</div>
+  </div>
+
+  <div class="screens-row">
+    <div class="phone-wrap">
+      <div class="screen-label">S15 · Paywall</div>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ◼ 🔋</div></div>
+        <div class="screen-content">
+          <div class="s-paywall">
+            <div class="paywall-close">✕</div>
+            <div class="paywall-badge">✦ SERENE PLUS</div>
+            <div class="paywall-title">Unlock your full healing journey</div>
+            <div class="paywall-sub">Everything you need to feel better, every day.</div>
+
+            <div class="plan-cards-wrap">
+              <div class="plan-card popular selected">
+                <div class="plan-radio checked"></div>
+                <div class="plan-info">
+                  <div class="plan-name">Yearly Plan</div>
+                  <div class="plan-period">Billed annually · Best value</div>
+                  <div class="plan-save">Save 44% · ₹167/mo</div>
+                </div>
+                <div class="plan-price">
+                  <div class="plan-amount">₹1,999</div>
+                  <div class="plan-per">/year</div>
+                </div>
+              </div>
+
+              <div class="plan-card">
+                <div class="plan-radio"></div>
+                <div class="plan-info">
+                  <div class="plan-name">Monthly Plan</div>
+                  <div class="plan-period">Cancel anytime</div>
+                </div>
+                <div class="plan-price">
+                  <div class="plan-amount">₹299</div>
+                  <div class="plan-per">/month</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="paywall-features">
+              <div class="pf-item"><div class="pf-check">✓</div>Unlimited Aura AI conversations</div>
+              <div class="pf-item"><div class="pf-check">✓</div>All 100+ sessions & meditations</div>
+              <div class="pf-item"><div class="pf-check">✓</div>Full CBT & DBT exercise library</div>
+              <div class="pf-item"><div class="pf-check">✓</div>Advanced mood analytics & insights</div>
+              <div class="pf-item"><div class="pf-check">✓</div>Personalized weekly wellness plan</div>
+              <div class="pf-item"><div class="pf-check">✓</div>Ad-free, completely private</div>
+            </div>
+
+            <div class="paywall-cta">Start 7-Day Free Trial →</div>
+            <div class="paywall-restore">Restore purchase · Terms · Privacy</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-sublabel">RevenueCat SDK handles purchase<br>7-day trial reduces friction · Annual pre-selected</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div style="background:#0D1117;padding:48px;text-align:center;border-top:1px solid rgba(255,255,255,0.05);">
+  <div style="font-family:'Literata',serif;font-size:28px;font-weight:300;color:var(--sage-2);margin-bottom:8px;">Serene <em style="font-style:italic;">🌿</em></div>
+  <div style="font-size:13px;color:var(--mist);">15 screens designed · Database-mapped · Ready to build in React Native</div>
+  <div style="font-size:12px;color:rgba(107,158,120,0.5);margin-top:12px;">Next step → Set up Expo project + Supabase connection</div>
+</div>
+
+</body>
+</html>
