@@ -110,34 +110,34 @@ export default function Home() {
 
   if (showSplash) {
     return (
-      <div className="app-container">
-        <div className="s-splash">
-          <div className="splash-orb"></div>
-          <div className="splash-name">Serene</div>
-          <div className="splash-tagline">Your mind deserves care</div>
+      <div className="flex justify-center items-center h-screen bg-[var(--background)]">
+        <div className="text-center">
+          <div className="mx-auto mb-8" style={{ background: "linear-gradient(135deg, var(--chart-1), var(--chart-2))", width: "80px", height: "80px", borderRadius: "50%", filter: "blur(24px)", opacity: 0.8 }}></div>
+          <div className="text-5xl font-black text-white tracking-tight mb-3 relative z-10" style={{ marginTop: "-90px" }}>Serene</div>
+          <div className="text-xs font-bold text-white/50 tracking-widest uppercase mt-4">Your mind deserves care</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="app-container" style={{ overflowY: "auto", display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", padding: "24px 16px" }}>
-      <div className="s-signup" style={{ width: "100%", maxWidth: "480px", background: "white", borderRadius: "24px", boxShadow: "0 10px 32px rgba(15, 28, 20, 0.05)", border: "1px solid rgba(15, 28, 20, 0.04)", padding: "32px 24px", minHeight: "auto", height: "auto" }}>
-        <div className="signup-title">
+    <div className="flex justify-center items-center min-h-screen bg-[var(--background)] px-4 py-8">
+      <div className="neu-surface w-full max-w-[480px] rounded-[2rem] p-8 sm:p-10 border-t border-white/10">
+        <div className="text-3xl font-black text-white mb-2 tracking-tight">
           {isRegister ? "Create your space" : "Welcome back"}
         </div>
-        <div className="signup-sub">
+        <div className="text-sm text-white/50 mb-10 font-medium">
           {isRegister ? "A safe, private place just for you." : "Sign in to continue your reflections."}
         </div>
 
         {isRegister ? (
           /* REGISTRATION FORM */
-          <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', flex: 1, gap: '4px' }}>
-            <div className="input-group">
-              <div className="input-label">Your name</div>
+          <form onSubmit={handleRegister} className="flex flex-col gap-5">
+            <div>
+              <div className="text-[11px] font-bold text-white/40 uppercase tracking-widest mb-2">Your name</div>
               <input 
                 type="text" 
-                className={`input-field ${focusedField === 'name' ? 'focused' : ''}`}
+                className={`neu-pressed rounded-xl px-4 py-3.5 text-sm w-full outline-none transition-all duration-300 text-white bg-transparent ${focusedField === 'name' ? 'ring-2 ring-[var(--chart-2)]' : ''}`}
                 placeholder="Namrata" 
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -146,11 +146,11 @@ export default function Home() {
                 required
               />
             </div>
-            <div className="input-group">
-              <div className="input-label">Email</div>
+            <div>
+              <div className="text-[11px] font-bold text-white/40 uppercase tracking-widest mb-2">Email</div>
               <input 
                 type="email" 
-                className={`input-field ${focusedField === 'email' ? 'focused' : ''}`} 
+                className={`neu-pressed rounded-xl px-4 py-3.5 text-sm w-full outline-none transition-all duration-300 text-white bg-transparent ${focusedField === 'email' ? 'ring-2 ring-[var(--chart-2)]' : ''}`}
                 placeholder="namrata@gmail.com" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -159,11 +159,11 @@ export default function Home() {
                 required
               />
             </div>
-            <div className="input-group">
-              <div className="input-label">Password</div>
+            <div>
+              <div className="text-[11px] font-bold text-white/40 uppercase tracking-widest mb-2">Password</div>
               <input 
                 type="password" 
-                className={`input-field ${focusedField === 'password' ? 'focused' : ''}`} 
+                className={`neu-pressed rounded-xl px-4 py-3.5 text-sm w-full outline-none transition-all duration-300 text-white bg-transparent ${focusedField === 'password' ? 'ring-2 ring-[var(--chart-2)]' : ''}`}
                 placeholder="••••••••" 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -173,12 +173,12 @@ export default function Home() {
               />
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-              <div className="input-group">
-                <div className="input-label">Age</div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <div className="text-[11px] font-bold text-white/40 uppercase tracking-widest mb-2">Age</div>
                 <input 
                   type="number" 
-                  className={`input-field ${focusedField === 'age' ? 'focused' : ''}`} 
+                  className={`neu-pressed rounded-xl px-4 py-3.5 text-sm w-full outline-none transition-all duration-300 text-white bg-transparent ${focusedField === 'age' ? 'ring-2 ring-[var(--chart-2)]' : ''}`}
                   min="13"
                   max="100"
                   value={age}
@@ -188,47 +188,48 @@ export default function Home() {
                   required
                 />
               </div>
-              <div className="input-group">
-                <div className="input-label">Gender</div>
+              <div>
+                <div className="text-[11px] font-bold text-white/40 uppercase tracking-widest mb-2">Gender</div>
                 <select 
-                  className="input-field"
+                  className="neu-pressed rounded-xl px-4 py-3.5 text-sm w-full outline-none transition-all duration-300 text-white bg-transparent appearance-none cursor-pointer"
                   value={gender}
                   onChange={(e) => setGender(e.target.value)}
+                  style={{ backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 1rem center", backgroundSize: "1em" }}
                 >
-                  <option value="Female">Female</option>
-                  <option value="Male">Male</option>
-                  <option value="Non-binary">Non-binary</option>
+                  <option value="Female" className="bg-[#0f1115] text-white">Female</option>
+                  <option value="Male" className="bg-[#0f1115] text-white">Male</option>
+                  <option value="Non-binary" className="bg-[#0f1115] text-white">Non-binary</option>
                 </select>
               </div>
             </div>
 
-            <div className="input-group">
-              <div className="input-label">Persona</div>
+            <div>
+              <div className="text-[11px] font-bold text-white/40 uppercase tracking-widest mb-2">Persona</div>
               <select 
-                className="input-field"
+                className="neu-pressed rounded-xl px-4 py-3.5 text-sm w-full outline-none transition-all duration-300 text-white bg-transparent appearance-none cursor-pointer"
                 value={persona}
                 onChange={(e) => setPersona(e.target.value)}
+                style={{ backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 1rem center", backgroundSize: "1em" }}
               >
-                <option value="Exam Warrior/ Teenager">Exam Warrior / Teenager</option>
-                <option value="Bachelor">Bachelor</option>
-                <option value="Corporate Professional">Corporate Professional</option>
-                <option value="Parent of a teenager">Parent of a teenager</option>
-                <option value="Working Woman">Working Woman</option>
+                <option value="Exam Warrior/ Teenager" className="bg-[#0f1115] text-white">Exam Warrior / Teenager</option>
+                <option value="Bachelor" className="bg-[#0f1115] text-white">Bachelor</option>
+                <option value="Corporate Professional" className="bg-[#0f1115] text-white">Corporate Professional</option>
+                <option value="Parent of a teenager" className="bg-[#0f1115] text-white">Parent of a teenager</option>
+                <option value="Working Woman" className="bg-[#0f1115] text-white">Working Woman</option>
               </select>
             </div>
 
             <button 
               type="submit" 
-              className="btn-primary" 
-              style={{ marginTop: '16px' }}
+              className="mt-6 neu-pressed rounded-full py-4 w-full font-bold text-white tracking-widest uppercase transition-all duration-300 hover:text-[var(--chart-2)] border border-white/5 hover:border-[var(--chart-2)]/30 hover:bg-[var(--chart-2)]/5"
               disabled={loading}
             >
-              {loading ? "Registering..." : "Create Account →"}
+              {loading ? "Registering..." : "Create Account"}
             </button>
             
             <button 
               type="button"
-              className="btn-secondary"
+              className="mt-2 text-sm font-semibold text-white/40 hover:text-white transition-colors"
               onClick={() => setIsRegister(false)}
             >
               Already have an account? Log In
@@ -236,12 +237,12 @@ export default function Home() {
           </form>
         ) : (
           /* LOGIN FORM */
-          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', flex: 1, gap: '4px' }}>
-            <div className="input-group">
-              <div className="input-label">Email</div>
+          <form onSubmit={handleLogin} className="flex flex-col gap-5">
+            <div>
+              <div className="text-[11px] font-bold text-white/40 uppercase tracking-widest mb-2">Email</div>
               <input 
                 type="email" 
-                className={`input-field ${focusedField === 'email' ? 'focused' : ''}`} 
+                className={`neu-pressed rounded-xl px-4 py-3.5 text-sm w-full outline-none transition-all duration-300 text-white bg-transparent ${focusedField === 'email' ? 'ring-2 ring-[var(--chart-2)]' : ''}`}
                 placeholder="namrata@gmail.com" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -250,11 +251,11 @@ export default function Home() {
                 required
               />
             </div>
-            <div className="input-group">
-              <div className="input-label">Password</div>
+            <div>
+              <div className="text-[11px] font-bold text-white/40 uppercase tracking-widest mb-2">Password</div>
               <input 
                 type="password" 
-                className={`input-field ${focusedField === 'password' ? 'focused' : ''}`} 
+                className={`neu-pressed rounded-xl px-4 py-3.5 text-sm w-full outline-none transition-all duration-300 text-white bg-transparent ${focusedField === 'password' ? 'ring-2 ring-[var(--chart-2)]' : ''}`}
                 placeholder="••••••••" 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -266,16 +267,15 @@ export default function Home() {
 
             <button 
               type="submit" 
-              className="btn-primary" 
-              style={{ marginTop: '16px' }}
+              className="mt-6 neu-pressed rounded-full py-4 w-full font-bold text-white tracking-widest uppercase transition-all duration-300 hover:text-[var(--chart-2)] border border-white/5 hover:border-[var(--chart-2)]/30 hover:bg-[var(--chart-2)]/5"
               disabled={loading}
             >
-              {loading ? "Logging In..." : "Log In →"}
+              {loading ? "Logging In..." : "Log In"}
             </button>
             
             <button 
               type="button"
-              className="btn-secondary"
+              className="mt-2 text-sm font-semibold text-white/40 hover:text-white transition-colors"
               onClick={() => setIsRegister(true)}
             >
               Don't have an account? Sign Up

@@ -5,6 +5,7 @@ import uuid
 
 from backend.models.database import get_db, User
 from backend.api.ml.aura_agent import get_aura_response
+from backend.api.ml.rlhf_nudge import get_global_system_prompt_rules
 
 router = APIRouter()
 
@@ -29,6 +30,9 @@ def chat_with_aura(payload: ChatRequest, background_tasks: BackgroundTasks, db: 
     from backend.models.database import AIInsightsCache
     latest_insights = db.query(AIInsightsCache).filter(AIInsightsCache.user_id == payload.user_id).order_by(AIInsightsCache.date.desc()).first()
     phase_2_insights = latest_insights.raw_json_payload if latest_insights else {}
+    
+    # 1.6 Fetch RLHF rules
+    rlhf_rules = get_global_system_prompt_rules(db, str(payload.user_id))
 
     # 2. Get Aura response (and queue memory saving in the background)
     try:
@@ -39,7 +43,8 @@ def chat_with_aura(payload: ChatRequest, background_tasks: BackgroundTasks, db: 
             user_gender=user.gender or "Female",
             message=payload.message,
             background_tasks=background_tasks,
-            phase_2_insights=phase_2_insights
+            phase_2_insights=phase_2_insights,
+            rlhf_rules=rlhf_rules
         )
         return ChatResponse(response=response_text)
     except Exception as e:

@@ -1,0 +1,202 @@
+[
+  {
+    "query": "My chest feels tight every morning before the standup meeting with my manager.",
+    "expected_memory_chunk": "User experiences physiological anxiety symptoms triggered by morning synchronization meetings with their supervisor."
+  },
+  {
+    "query": "I can't stop checking my phone to see if they texted back, it's making me sick.",
+    "expected_memory_chunk": "User exhibits hypervigilance and compulsive checking behavior linked to relationship communication anxiety."
+  },
+  {
+    "query": "Staring at the ceiling at 3 AM completely exhausted but my mind won't shut off.",
+    "expected_memory_chunk": "User suffers from sleep-onset insomnia driven by racing thoughts and cognitive hyperarousal at night."
+  },
+  {
+    "query": "I just snapped at my partner over a dirty dish and now I feel like a terrible person.",
+    "expected_memory_chunk": "User experiences emotional dysregulation and disproportionate irritability followed by intense feelings of guilt."
+  },
+  {
+    "query": "Everything feels foggy today, I can't focus on my lines of code for more than two minutes.",
+    "expected_memory_chunk": "User reports significant cognitive fatigue, brain fog, and reduced attention span disrupting professional tasks."
+  },
+  {
+    "query": "Whenever the grocery store gets too crowded, I feel like the walls are closing in on me.",
+    "expected_memory_chunk": "User experiences agoraphobic tendencies and claustrophobic panic symptoms in high-density public spaces."
+  },
+  {
+    "query": "I got the promotion but I'm completely terrified they'll realize I have no idea what I'm doing.",
+    "expected_memory_chunk": "User struggles with severe imposter syndrome and core incompetence fears following career advancement."
+  },
+  {
+    "query": "I skipped going out with my friends again because the thought of socializing feels like a chore.",
+    "expected_memory_chunk": "User exhibits social withdrawal and behavioral avoidance patterns due to low social energy."
+  },
+  {
+    "query": "My throat constricts and my palms sweat whenever I have to present my work to the team.",
+    "expected_memory_chunk": "User experiences acute public speaking anxiety manifested through somatic stress responses."
+  },
+  {
+    "query": "I've been drinking four cups of coffee just to get through the afternoon slump, but it makes me jittery.",
+    "expected_memory_chunk": "User relies heavily on caffeine to counteract chronic exhaustion, inadvertently exacerbating physical anxiety."
+  },
+  {
+    "query": "I feel like I'm carrying a heavy weight on my shoulders all day and nothing brings me joy right now.",
+    "expected_memory_chunk": "User describes persistent anhedonia and a pervasive sense of emotional heaviness or low mood."
+  },
+  {
+    "query": "I tore up my entire design draft because a tiny detail looked slightly off. It has to be flawless.",
+    "expected_memory_chunk": "User displays maladaptive perfectionism and extreme self-criticism leading to task destruction."
+  },
+  {
+    "query": "Ever since the layoffs were announced, I wake up sweating thinking I'm going to lose my apartment.",
+    "expected_memory_chunk": "User experiences financial insecurity and existential job security panic affecting sleep quality."
+  },
+  {
+    "query": "I feel completely detached from my body right now, like I'm watching myself from across the room.",
+    "expected_memory_chunk": "User reports episodes of depersonalization and dissociation during periods of elevated emotional strain."
+  },
+  {
+    "query": "I dropped a single mug today and ended up sobbing on the kitchen floor for an hour.",
+    "expected_memory_chunk": "User experiences an emotional breaking point where minor frustrations trigger intense crying spells."
+  },
+  {
+    "query": "I keep replaying that awkward comment I made during lunch over and over in my head.",
+    "expected_memory_chunk": "User engages in persistent post-event rumination regarding minor social interactions."
+  },
+  {
+    "query": "Every time my phone rings, my stomach drops because I assume someone has died or gotten hurt.",
+    "expected_memory_chunk": "User exhibits catastrophic thinking and a hyperactive threat-appraisal response to ordinary communication triggers."
+  },
+  {
+    "query": "I haven't left my apartment in four days, and cleaning the kitchen feels like climbing Mount Everest.",
+    "expected_memory_chunk": "User demonstrates severe psychomotor retardation and depressive lethargy impacting basic activities of daily living."
+  },
+  {
+    "query": "I feel completely fine one minute, and the next I'm so angry I want to throw something at the wall.",
+    "expected_memory_chunk": "User describes rapid mood swings and volatile affect control without a clear immediate external trigger."
+  },
+  {
+    "query": "I'm working 14-hour days but I still feel like I'm falling behind and letting everyone down.",
+    "expected_memory_chunk": "User displays classic workplace burnout configurations coupled with over-responsibility patterns."
+  },
+  {
+    "query": "When I try to think about the future, all I see is a blank wall. I just don't see things getting better.",
+    "expected_memory_chunk": "User expresses deep hopelessness and a foreshortened sense of future orientation."
+  },
+  {
+    "query": "My hands start shaking out of nowhere and I feel this sudden, overwhelming sense of impending doom.",
+    "expected_memory_chunk": "User suffers from spontaneous, un-cued panic attacks accompanied by autonomic nervous system arousal."
+  },
+  {
+    "query": "I've started avoiding driving on the highway entirely because I'm terrified I'll lose control of the car.",
+    "expected_memory_chunk": "User develops specific situational avoidance behavior driven by intrusive vehicular safety anxieties."
+  },
+  {
+    "query": "I ordered takeout again because looking at the stove and planning a meal makes me want to burst into tears.",
+    "expected_memory_chunk": "User experiences severe decision paralysis and executive dysfunction relative to domestic tasks."
+  },
+  {
+    "query": "I feel like a ghost in my own house; my family is right there but I feel completely isolated from them.",
+    "expected_memory_chunk": "User reports profound emotional numbness and interpersonal alienation despite proximity to support systems."
+  },
+  {
+    "query": "I notice my jaw is constantly clenched so hard that my teeth and temples ache by midday.",
+    "expected_memory_chunk": "User exhibits chronic bruxism and structural somatic tension accumulation as a baseline stress expression."
+  },
+  {
+    "query": "If I don't double-check that the stove is off three times before going to bed, I can't rest.",
+    "expected_memory_chunk": "User demonstrates checking rituals and compulsive security behaviors to mitigate nocturnal safety doubts."
+  },
+  {
+    "query": "I got a minor piece of critical feedback on my code and immediately wanted to quit my entire job.",
+    "expected_memory_chunk": "User exhibits high rejection sensitivity and an all-or-nothing cognitive distortion regarding professional performance."
+  },
+  {
+    "query": "I can't take deep breaths anymore; it feels like my lungs stop halfway and I'm suffocating.",
+    "expected_memory_chunk": "User presents with shallow clavicular breathing and subjective dyspnea related to perpetual anxiety states."
+  },
+  {
+    "query": "I find myself eating chips and candy all night long even though I'm not actually hungry.",
+    "expected_memory_chunk": "User utilizes emotional eating and compulsive snacking as an unconscious self-soothing mechanism."
+  },
+  {
+    "query": "I threw out all my old journals because looking at past versions of myself fills me with absolute disgust.",
+    "expected_memory_chunk": "User experiences intense retrospective shame and rejection of their historical identity."
+  },
+  {
+    "query": "Whenever anyone is quiet around me, I automatically assume they are furious with me or planning to leave.",
+    "expected_memory_chunk": "User projects abandonment fears onto ambient social silences via personalization distortions."
+  },
+  {
+    "query": "I've been waking up at 4 AM every single day and find it impossible to fall back asleep.",
+    "expected_memory_chunk": "User exhibits terminal insomnia or early morning awakening patterns common in clinical depressive cycles."
+  },
+  {
+    "query": "My mind goes completely blank during exams or presentations, like someone turned off a switch.",
+    "expected_memory_chunk": "User experiences stress-induced working memory freezing and cognitive blocking under evaluation pressure."
+  },
+  {
+    "query": "I spent three hours arranging the icons on my desktop instead of finishing the presentation due tomorrow.",
+    "expected_memory_chunk": "User engages in displacement procrastination and avoidant micro-organizing to dodge high-stakes task anxiety."
+  },
+  {
+    "query": "I feel this hot surge of adrenaline dump into my stomach the moment my alarm goes off.",
+    "expected_memory_chunk": "User experiences acute anticipatory cortisol spikes immediately upon waking up."
+  },
+  {
+    "query": "I haven't responded to my mom's texts in a week because explaining how I feel feels too exhausting.",
+    "expected_memory_chunk": "User demonstrates communication withdrawal due to overwhelming emotional exhaustion."
+  },
+  {
+    "query": "I am terrified of making a mistake in front of the team, so I just stay quiet during all our architecture reviews.",
+    "expected_memory_chunk": "User exhibits avoidant behavior in collaborative professional settings due to intense fear of public negative evaluation."
+  },
+  {
+    "query": "I keep picking at the skin around my thumbs until they bleed whenever I'm waiting for feedback.",
+    "expected_memory_chunk": "User manifests body-focused repetitive behavior as a physical outlet for nervous anticipation."
+  },
+  {
+    "query": "I feel like I'm completely failing as a parent because I don't have enough patience at the end of the day.",
+    "expected_memory_chunk": "User struggles with parental guilt and cognitive strain linked to diminished emotional bandwidth at night."
+  },
+  {
+    "query": "I keep buying tech gadgets I don't need just to feel a brief spark of excitement for an hour.",
+    "expected_memory_chunk": "User relies on retail therapy and impulsive purchasing behaviors to temporarily counteract persistent low affect."
+  },
+  {
+    "query": "My stomach is in constant knots and I have zero appetite, food tastes like cardboard right now.",
+    "expected_memory_chunk": "User experiences stress-induced gastrointestinal distress and a total suppression of somatic appetite signals."
+  },
+  {
+    "query": "I can't make decisions anymore—even choosing between two types of soup makes me spiral into anxiety.",
+    "expected_memory_chunk": "User reports acute abulia and extreme analysis paralysis over minor daily selections."
+  },
+  {
+    "query": "I feel like everyone around me is moving forward with their lives while I am entirely stuck in wet cement.",
+    "expected_memory_chunk": "User expresses social comparison distress and feelings of absolute stagnation or immobility."
+  },
+  {
+    "query": "I can't stop thinking about what will happen if the market crashes and I lose my life savings.",
+    "expected_memory_chunk": "User experiences obsessive macro-economic anxieties and catastrophic financial projection patterns."
+  },
+  {
+    "query": "I feel an intense urge to run out of the room whenever the discussion turns to long-term planning.",
+    "expected_memory_chunk": "User exhibits acute emotional flight responses when confronted with commitment-heavy futures."
+  },
+  {
+    "query": "I notice that I'm holding my breath for long stretches while working at my desk without realizing it.",
+    "expected_memory_chunk": "User suffers from 'screen apnea' or stress-induced voluntary breath-holding throughout professional shifts."
+  },
+  {
+    "query": "I spent the weekend doing chores and cleaning because sitting still makes me feel incredibly anxious.",
+    "expected_memory_chunk": "User relies on compulsive hyper-productivity to outrun uncomfortable internal stillness or underlying anxiety."
+  },
+  {
+    "query": "I keep looking at my old college photos and crying because I feel like my best days are permanently behind me.",
+    "expected_memory_chunk": "User experiences depressive nostalgia and a profound grief concerning their perceived lost youth or vitality."
+  },
+  {
+    "query": "I feel completely overwhelmed by sensory things—loud noises, bright lights, and screens make me want to scream.",
+    "expected_memory_chunk": "User exhibits acute sensory overload and hyperacusis brought on by a highly taxed nervous system."
+  }
+]

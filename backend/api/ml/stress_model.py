@@ -1,8 +1,8 @@
 import os
-import sys
 import pickle
 import warnings
 import pandas as pd
+import numpy as np
 import xgboost as xgb
 import shap
 from typing import List, Dict, Tuple
@@ -15,40 +15,53 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 WORKSPACE_ROOT = os.path.dirname(BASE_DIR)
 TEST_DIR = os.path.join(WORKSPACE_ROOT, "test")
 
-MODEL_PATH = os.path.join(TEST_DIR, "xgboost_stress_model.json")
-ENCODER_PATH = os.path.join(TEST_DIR, "stressor_encoder.pkl")
-FEATURES_PATH = os.path.join(TEST_DIR, "feature_columns.pkl")
+MODEL_LIFESTYLE_PATH = os.path.join(TEST_DIR, "stress_model_lifestyle.json")
+MODEL_STRESSORS_PATH = os.path.join(TEST_DIR, "stress_model_stressors.json")
+SCALER_LIFESTYLE_PATH = os.path.join(TEST_DIR, "stress_scaler_lifestyle.pkl")
+SCALER_STRESSORS_PATH = os.path.join(TEST_DIR, "stress_scaler_stressors.pkl")
+COLUMNS_STRESSORS_PATH = os.path.join(TEST_DIR, "stressor_columns.pkl")
 
 # Lazy loading of assets to keep startup fast
-_model = None
-_mlb = None
-_feature_columns = None
-_explainer = None
+_model_lifestyle = None
+_model_stressors = None
+_scaler_lifestyle = None
+_scaler_stressors = None
+_explainer_lifestyle = None
+_explainer_stressors = None
+_stressor_columns = None
+_feature_names_lifestyle = None
 
 def load_model_assets():
-    global _model, _mlb, _feature_columns, _explainer
-    if _model is None:
-        if not os.path.exists(MODEL_PATH):
-            raise FileNotFoundError(f"Model file not found at {MODEL_PATH}")
-        if not os.path.exists(ENCODER_PATH):
-            raise FileNotFoundError(f"Encoder file not found at {ENCODER_PATH}")
-        if not os.path.exists(FEATURES_PATH):
-            raise FileNotFoundError(f"Features file not found at {FEATURES_PATH}")
+    global _model_lifestyle, _model_stressors, _scaler_lifestyle, _scaler_stressors
+    global _explainer_lifestyle, _explainer_stressors, _stressor_columns, _feature_names_lifestyle
+    
+    if _model_lifestyle is None:
+        if not os.path.exists(MODEL_LIFESTYLE_PATH):
+            raise FileNotFoundError(f"Model file not found at {MODEL_LIFESTYLE_PATH}")
             
-        # Load XGBoost model
-        _model = xgb.XGBRegressor()
-        _model.load_model(MODEL_PATH)
+        # Load XGBoost models
+        _model_lifestyle = xgb.XGBRegressor()
+        _model_lifestyle.load_model(MODEL_LIFESTYLE_PATH)
         
-        # Load MultiLabelBinarizer
-        with open(ENCODER_PATH, "rb") as f:
-            _mlb = pickle.load(f)
+        _model_stressors = xgb.XGBRegressor()
+        _model_stressors.load_model(MODEL_STRESSORS_PATH)
+        
+        # Load Scalers
+        with open(SCALER_LIFESTYLE_PATH, "rb") as f:
+            _scaler_lifestyle = pickle.load(f)
             
-        # Load feature columns list
-        with open(FEATURES_PATH, "rb") as f:
-            _feature_columns = pickle.load(f)
+        with open(SCALER_STRESSORS_PATH, "rb") as f:
+            _scaler_stressors = pickle.load(f)
             
-        # Build SHAP TreeExplainer
-        _explainer = shap.TreeExplainer(_model)
+        # Load Stressor Columns
+        with open(COLUMNS_STRESSORS_PATH, "rb") as f:
+            _stressor_columns = pickle.load(f)
+            
+        _feature_names_lifestyle = getattr(_scaler_lifestyle, "feature_names_in_", ['age', 'sleep_avg_hours', 'work_study_hours', 'screen_time_hours', 'sleep_deviation', 'oversleeping_risk'])
+            
+        # Build SHAP TreeExplainers
+        _explainer_lifestyle = shap.TreeExplainer(_model_lifestyle)
+        _explainer_stressors = shap.TreeExplainer(_model_stressors)
 
 def predict_stress(
     age: int,
@@ -68,78 +81,91 @@ def predict_stress(
     """
     load_model_assets()
     
-    # Map gender labels to model's expected column names
-    gender_map = {
-        "Female": "gender_Female",
-        "Male": "gender_Male",
-        "Non-binary": "gender_Non-binary"
-    }
+    # ---------------------------------------------------------
+    # COMPONENT 1: LIFESTYLE FEATURES
+    # ---------------------------------------------------------
+    features_lifestyle = {}
+    features_lifestyle['age'] = float(age)
+    features_lifestyle['sleep_avg_hours'] = float(sleep_avg_hours)
+    features_lifestyle['work_study_hours'] = float(work_study_hours)
+    features_lifestyle['screen_time_hours'] = float(screen_time_hours)
+    features_lifestyle['sleep_deviation'] = abs(features_lifestyle['sleep_avg_hours'] - 7.5)
+    features_lifestyle['oversleeping_risk'] = 1.0 if features_lifestyle['sleep_avg_hours'] > 9.0 else 0.0
     
-    # Initialize dictionary with base/numeric fields (floats required by pandas)
-    live_user = {
-        "age": float(age),
-        "sleep_avg_hours": float(sleep_avg_hours),
-        "screen_time_hours": float(screen_time_hours),
-        "work_study_hours": float(work_study_hours),
-        "wellness_points": float(wellness_points)
-    }
-    
-    # Set the user's specific persona flags to 1.0 based on new categories
-    if persona == "Exam Warrior/ Teenager":
-        live_user["persona_Teen"] = 1.0
-        live_user["persona_Exam Warrior"] = 1.0
-    elif persona == "Corporate Professional":
-        live_user["persona_Corporate"] = 1.0
-    elif persona == "Parent of a teenager":
-        live_user["persona_Parent"] = 1.0
-    elif persona == "Working Woman":
-        live_user["persona_Working Woman"] = 1.0
-    # Bachelor maps to baseline, so no persona flags are set to 1.0
-        
-    # Set the user's gender flag to 1.0
-    mapped_gender = gender_map.get(gender)
-    if mapped_gender:
-        live_user[mapped_gender] = 1.0
-        
-    # Binarize factors (stressors) using MultiLabelBinarizer
-    # mlb.transform expects an iterable of iterables e.g. [factors]
-    binarized = _mlb.transform([factors])[0]
-    for class_name, val in zip(_mlb.classes_, binarized):
-        live_user[class_name] = float(val)
-        
-    # Build DataFrame matching the exact feature columns order
-    input_df = pd.DataFrame(0.0, index=[0], columns=_feature_columns)
-    
-    for key, value in live_user.items():
-        if key in input_df.columns:
-            input_df.loc[0, key] = float(value)
+    input_df_lifestyle = pd.DataFrame(0.0, index=[0], columns=_feature_names_lifestyle)
+    for key, value in features_lifestyle.items():
+        if key in input_df_lifestyle.columns:
+            input_df_lifestyle.loc[0, key] = float(value)
             
-    # Run prediction
-    predicted_score = float(_model.predict(input_df)[0])
+    X_lifestyle_scaled = pd.DataFrame(_scaler_lifestyle.transform(input_df_lifestyle), columns=_feature_names_lifestyle)
+    pred_lifestyle = float(_model_lifestyle.predict(X_lifestyle_scaled)[0])
     
-    # Run SHAP to extract driver impacts
-    shap_values = _explainer(input_df)
-    shap_array = shap_values.values[0]
+    # ---------------------------------------------------------
+    # COMPONENT 2: STRESSOR FEATURES
+    # ---------------------------------------------------------
+    input_df_stressors = pd.DataFrame(0.0, index=[0], columns=_stressor_columns)
+    
+    # 1. Count stressors
+    num_stressors = float(len(factors) if factors else 1)
+    if 'num_stressors' in input_df_stressors.columns:
+        input_df_stressors.loc[0, 'num_stressors'] = num_stressors
+        
+    # 2. One-hot encode stressors based on EXACT columns trained
+    if factors:
+        for factor in factors:
+            if factor in input_df_stressors.columns:
+                input_df_stressors.loc[0, factor] = 1.0
+                
+    X_stressors_scaled = pd.DataFrame(_scaler_stressors.transform(input_df_stressors), columns=_stressor_columns)
+    pred_stressors = float(_model_stressors.predict(X_stressors_scaled)[0])
+    
+    # ---------------------------------------------------------
+    # FINAL PREDICTION
+    # ---------------------------------------------------------
+    final_pred = pred_lifestyle + pred_stressors
+    
+    # ---------------------------------------------------------
+    # SHAP ANALYSIS
+    # ---------------------------------------------------------
+    shap_lifestyle = _explainer_lifestyle(X_lifestyle_scaled)
+    shap_stressors = _explainer_stressors(X_stressors_scaled)
     
     feature_impacts = {}
-    for feature, impact in zip(_feature_columns, shap_array):
+    
+    for feature, impact in zip(_feature_names_lifestyle, shap_lifestyle.values[0]):
         feature_impacts[feature] = float(impact)
         
-    # Filter drivers that have a POSITIVE impact (v > 0) meaning they INCREASE stress
+    for feature, impact in zip(_stressor_columns, shap_stressors.values[0]):
+        # Keep them separate if there are name collisions, but there shouldn't be
+        feature_impacts[feature] = float(impact)
+        
     increasing_drivers = {
         feature: round(float(impact), 3)
         for feature, impact in feature_impacts.items()
         if float(impact) > 0.01
     }
     
-    # Sort them descending (largest impact first) and take the top 5
     top_5_drivers = dict(
         sorted(increasing_drivers.items(), key=lambda item: item[1], reverse=True)[:5]
     )
     
-    return predicted_score, top_5_drivers
+    print("\n" + "="*40)
+    print("🧠 ML TWO-STAGE STRESS PREDICTION")
+    print("="*40)
+    print(f"Lifestyle Score (Base):  {pred_lifestyle:.2f}")
+    print(f"Stressors Score (Resid): {pred_stressors:.2f}")
+    print(f"Final Predicted Stress:  {final_pred:.2f}")
+    print("Top 5 Drivers:")
+    for driver, impact in top_5_drivers.items():
+        print(f"  • {driver}: +{impact:.3f}")
+    print("="*40 + "\n")
+    
+    return final_pred, top_5_drivers
 
 def get_all_factors() -> List[str]:
-    """Get the full list of checkbox binarizer classes supported by the model."""
+    """Get the full list of stressor columns supported by the model."""
     load_model_assets()
-    return list(_mlb.classes_)
+    if _stressor_columns:
+        # Filter out 'num_stressors' which is just a count feature, not a category
+        return [c for c in _stressor_columns if c != 'num_stressors']
+    return []
